@@ -24,14 +24,14 @@
           pkg-config-file = pkgs.writeTextFile {
             name = "memflow-ffi";
             destination = "/share/pkgconfig/memflow-ffi.pc";
-            text = ''
+            text = with self.packages.${system}; ''
               Name: memflow-ffi
-              Description: ${self.memflow.meta.description}
-              Version: ${self.memflow.version}
+              Description: C bindings for the memflow physical memory introspection framework
+              Version: ${memflow.version}
 
               Requires:
-              Libs: -L${self.memflow}/lib -l:libmemflow_ffi.a
-              Cflags: -I${self.memflow.dev}/include
+              Libs: -L${memflow}/lib -l:libmemflow_ffi.a
+              Cflags: -I${memflow.dev}/include
             '';
           };
 
@@ -214,8 +214,32 @@
                 license = licenses.mit;
               };
             });
-
         };
+
+        memflow-kmod = with pkgs;
+        let 
+          kvm = self.packages.${system}.memflow-kvm;
+        in
+          { kernel }:
+          stdenv.mkDerivation {
+            pname = "memflow-kmod-${kvm.version}-${kvm.kernel.version}";
+            inherit (kvm) version src;
+
+            preBuild = ''
+              sed -e "s@/lib/modules/\$(.*)@${kernel.dev}/lib/modules/${kernel.modDirVersion}@" -i Makefile
+            '';
+            installPhase = ''
+              install -D build/memflow.ko -t $out/lib/modules/${kernel.modDirVersion}/misc/
+            '';
+            dontStrip = true;
+            hardeningDisable = [ "format" "pic" ];
+            kernel = kernel.dev;
+            nativeBuildInputs = kernel.moduleBuildDependencies;
+            meta = with lib; {
+              # See: https://github.com/memflow/memflow-kvm#licensing-note
+              license = with licenses; [ gpl2Only ];
+            };
+          };
       }
     );
 }
