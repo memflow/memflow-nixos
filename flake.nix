@@ -20,8 +20,20 @@
         projectVersion = cargoTOML: src: "${cargoTOML.package.version}+${builtins.substring 0 7 src.rev}";
       in
       {
-
         packages = {
+          pkg-config-file = pkgs.writeTextFile {
+            name = "memflow-ffi";
+            destination = "/share/pkgconfig/memflow-ffi.pc";
+            text = ''
+              Name: memflow-ffi
+              Description: ${self.memflow.meta.description}
+              Version: ${self.memflow.version}
+
+              Requires:
+              Libs: -L${self.memflow}/lib -l:libmemflow_ffi.a
+              Cflags: -I${self.memflow.dev}/include
+            '';
+          };
 
           cglue-bindgen =
             let
@@ -29,8 +41,8 @@
                 owner = "h33p";
                 repo = "cglue";
                 # See: https://github.com/h33p/cglue/commits/main
-                rev = "02e0f1089fe942edcda0391d12a008b6459bcc99";
-                sha256 = "sha256-6+4ocKG9sAuZkT6AoOTBix3Sl6tifEXXexgo3w+YTC4=";
+                rev = "d85d2e83bd6f5eb6331174fbdc322418031f051b";
+                sha256 = "sha256-S8c1+eado9Ov91OHN8XSqxBsixERJHZ3ZEtDmMYgyLY=";
               };
               cargoTOML = (builtins.fromTOML (builtins.readFile (src + "/cglue-bindgen/Cargo.toml")));
             in
@@ -40,8 +52,7 @@
 
               inherit src;
 
-              cargoHash = "sha256-u/bsAY25HrGQNUeJaqZtFcwUHmi4Xw/ePIDAh9WJ7Zg=";
-              cargoPatches = [ ./patches/0001-add_cglue_bindgen_Cargo.lock.patch ];
+              cargoHash = "sha256-RyOwoope/r9kU1tqbAUUnpBPUM+t+R1syj7CnwBE2G8=";
 
               nativeBuildInputs = with pkgs; [ makeWrapper ];
 
@@ -78,13 +89,6 @@
 
               inherit src;
 
-              patches = [
-                # The default bindgen wrapper script tries to use rustup to download Rust nightly. We can't download
-                # stuff in the build sandbox and it isn't hermetic anyways, plus our cglue-bindgen derivation is already
-                # wrapped with nightly.
-                ./patches/0002-memflow_ffi_cglue_bindgen_script.patch
-              ];
-
               # Test suites are often failing for next branch commits since it's bleeding edge. Sometimes non-passing
               # commits include important fixes so we'll pin each package derivation to use a known working commit.
               doCheck = false;
@@ -96,19 +100,14 @@
               cargoHash = "sha256-Mj23+M4ws+ZfaDop0QisTLCMjtTftgrQDr3cQNNSvXc=";
               cargoBuildFlags = [ "--workspace" "--all-features" ];
 
-              outputs = [ "dev" "out" ]; # Create outputs for the FFI shared library & development headers
+              outputs = [ "out" "dev" ]; # Create outputs for the FFI shared library & development headers
 
               postBuild = ''
-                # Delete any pregenerated FFI headers, we'll produce our own in this derivation
-                rm -f ./memflow-ffi/*.h{,pp}
-                # Create FFI development headers using the patched script
-                cd ./memflow-ffi/
-                bash ./bindgen.sh
-                # Put header files into dev output folder
-                mkdir -vp "$dev/include/memflow/"
-                cp -v ./memflow.h{,pp} "$dev/include/memflow/"
-                # Return to pwd otherwise builder will be upset
-                cd ../.
+                mkdir -p $dev/include
+                cglue-bindgen -c memflow-ffi/cglue.toml -- --config memflow-ffi/cbindgen.toml --crate memflow-ffi -l C --output /dev/null || true
+                cglue-bindgen -c memflow-ffi/cglue.toml -- --config memflow-ffi/cbindgen.toml --crate memflow-ffi -l C --output $dev/include/memflow.h
+                cglue-bindgen -c memflow-ffi/cglue.toml -- --config memflow-ffi/cbindgen.toml --crate memflow-ffi -l C++ --output /dev/null || true
+                cglue-bindgen -c memflow-ffi/cglue.toml -- --config memflow-ffi/cbindgen.toml --crate memflow-ffi -l C++ --output $dev/include/memflow_cpp.h
               '';
 
               meta = with lib; with cargoTOML.package; {
