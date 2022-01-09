@@ -41,8 +41,8 @@
                 owner = "h33p";
                 repo = "cglue";
                 # See: https://github.com/h33p/cglue/commits/main
-                rev = "02e0f1089fe942edcda0391d12a008b6459bcc99";
-                sha256 = "sha256-6+4ocKG9sAuZkT6AoOTBix3Sl6tifEXXexgo3w+YTC4=";
+                rev = "d85d2e83bd6f5eb6331174fbdc322418031f051b";
+                sha256 = "sha256-S8c1+eado9Ov91OHN8XSqxBsixERJHZ3ZEtDmMYgyLY=";
               };
               cargoTOML = (builtins.fromTOML (builtins.readFile (src + "/cglue-bindgen/Cargo.toml")));
             in
@@ -52,15 +52,7 @@
 
               inherit src;
 
-              cargoHash = "sha256-u/bsAY25HrGQNUeJaqZtFcwUHmi4Xw/ePIDAh9WJ7Zg=";
-
-              postPatch = ''
-                cp ${./Cargo.lock} Cargo.lock
-              '';
-
-              cargoLock = {
-                lockFile = ./Cargo.lock;
-              };
+              cargoHash = "sha256-RyOwoope/r9kU1tqbAUUnpBPUM+t+R1syj7CnwBE2G8=";
 
               nativeBuildInputs = with pkgs; [ makeWrapper ];
 
