@@ -88,11 +88,6 @@
               # Test suites are often failing for next branch commits since it's bleeding edge. Sometimes non-passing
               # commits include important fixes so we'll pin each package derivation to use a known working commit.
               doCheck = false;
-              # Since memflow is still pre-v1 include debugging symbols for easier troubleshooting of potential crashes
-              # and issues. You can override this attribute if you want release builds with high performance.
-              # See: https://nixos.org/manual/nixpkgs/stable/#building-a-package-in-debug-mode
-              buildType = "debug";
-              dontStrip = true; # See above
 
               nativeBuildInputs = with pkgs; [
                 self.packages.${system}.cglue-bindgen
@@ -140,9 +135,6 @@
 
               inherit src;
 
-              buildType = "debug";
-              dontStrip = true;
-
               cargoHash = "sha256-nRFbisI2sNoORPewogZxK0p/Q0AUP662PYP9h/+Gj98=";
               cargoBuildFlags = [ "--workspace" "--all-features" ];
 
@@ -170,9 +162,6 @@
               version = projectVersion cargoTOML src;
 
               inherit src;
-
-              buildType = "debug";
-              dontStrip = true;
 
               RUST_BACKTRACE = "full";
               LIBCLANG_PATH = "${pkgs.libclang.lib}/lib/"; # "thread 'main' panicked at 'Unable to find libclang"
@@ -215,8 +204,6 @@
               inherit src;
 
               doCheck = false;
-              buildType = "debug";
-              dontStrip = true;
 
               cargoHash = "sha256-8Ba0utfeA2uKeB+SfSZPwusxiFGtRF3VmoO9+6CZ0O8=";
               # See: https://github.com/memflow/memflow-qemu/tree/next#building-the-stand-alone-connector-for-dynamic-loading
