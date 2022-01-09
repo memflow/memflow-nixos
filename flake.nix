@@ -217,11 +217,10 @@
         };
 
         memflow-kmod = with pkgs;
-        let 
-          kvm = self.packages.${system}.memflow-kvm;
-        in
-          { kernel }:
-          stdenv.mkDerivation {
+          let
+            kvm = self.packages.${system}.memflow-kvm;
+          in
+          kernel: stdenv.mkDerivation {
             pname = "memflow-kmod-${kvm.version}-${kvm.kernel.version}";
             inherit (kvm) version src;
 
