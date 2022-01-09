@@ -122,9 +122,9 @@
               src = pkgs.fetchFromGitHub {
                 owner = "memflow";
                 repo = "memflow-win32";
-                rev = "e94c7120296b0fc0404fe79b41f87f646362c28e";
+                rev = "806ffe08c54b17bd8365ac5fb1fefe515d760130";
                 # See: https://github.com/memflow/memflow-win32/commits/main
-                sha256 = "sha256-RQwbw7k4DZfrcDP0RHCb8k/4v4HshcjSVlzq9PtOOis=";
+                sha256 = "sha256-Gy4ZWXyGzU8442Jo+pH6GajWig7EnWwNdrOAX7cPHY0=";
               };
               cargoTOML = (builtins.fromTOML (builtins.readFile (src + "/Cargo.toml")));
             in
@@ -134,7 +134,7 @@
 
               inherit src;
 
-              cargoHash = "sha256-nRFbisI2sNoORPewogZxK0p/Q0AUP662PYP9h/+Gj98=";
+              cargoHash = "sha256-RpWWGKiCM9WgxIth+BmwZ+HB5YYnR6Ilos/nVp04IAU=";
               cargoBuildFlags = [ "--workspace" "--all-features" ];
 
               meta = with lib; with cargoTOML.package; {
