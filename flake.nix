@@ -103,17 +103,21 @@
               outputs = [ "out" "dev" ]; # Create outputs for the FFI shared library & development headers
 
               postBuild = ''
-                mkdir -p $dev/include
-                cglue-bindgen -c memflow-ffi/cglue.toml -- --config memflow-ffi/cbindgen.toml --crate memflow-ffi -l C --output /dev/null || true
-                cglue-bindgen -c memflow-ffi/cglue.toml -- --config memflow-ffi/cbindgen.toml --crate memflow-ffi -l C --output $dev/include/memflow.h
-                cglue-bindgen -c memflow-ffi/cglue.toml -- --config memflow-ffi/cbindgen.toml --crate memflow-ffi -l C++ --output /dev/null || true
-                cglue-bindgen -c memflow-ffi/cglue.toml -- --config memflow-ffi/cbindgen.toml --crate memflow-ffi -l C++ --output $dev/include/memflow_cpp.h
+                mkdir -vp $dev/include/
+                cglue-bindgen -c memflow-ffi/cglue.toml -- --config memflow-ffi/cbindgen.toml --crate memflow-ffi \
+                  -l C --output /dev/null || true
+                cglue-bindgen -c memflow-ffi/cglue.toml -- --config memflow-ffi/cbindgen.toml --crate memflow-ffi \
+                  -l C --output $dev/include/memflow.h
+                cglue-bindgen -c memflow-ffi/cglue.toml -- --config memflow-ffi/cbindgen.toml --crate memflow-ffi \
+                  -l C++ --output /dev/null || true
+                cglue-bindgen -c memflow-ffi/cglue.toml -- --config memflow-ffi/cbindgen.toml --crate memflow-ffi \
+                  -l C++ --output $dev/include/memflow_cpp.h
               '';
 
-              meta = with lib; with cargoTOML.package; {
+              meta = with cargoTOML.package; {
                 inherit description homepage;
                 downloadPage = https://github.com/memflow/memflow/releases;
-                license = licenses.mit;
+                license = lib.licenses.mit;
               };
             };
 
@@ -137,10 +141,10 @@
               cargoHash = "sha256-tcXIUV2EHVdFXq8hK1GBndrh3ZzGEF6+x2u6MRE98pQ=";
               cargoBuildFlags = [ "--workspace" "--all-features" ];
 
-              meta = with lib; with cargoTOML.package; {
+              meta = with cargoTOML.package; {
                 inherit description homepage;
                 downloadPage = https://github.com/memflow/memflow-win32/releases;
-                license = licenses.mit;
+                license = lib.licenses.mit;
               };
             });
 
@@ -177,10 +181,10 @@
                 rust-bindgen # "./mabi.h:14:10: fatal error: 'linux/types.h' file not found"
               ];
 
-              meta = with lib; with cargoTOML.package; {
+              meta = with cargoTOML.package; {
                 inherit description homepage;
                 downloadPage = https://github.com/memflow/memflow-kvm/releases;
-                license = licenses.mit;
+                license = lib.licenses.mit;
               };
             });
 
@@ -208,35 +212,36 @@
               # See: https://github.com/memflow/memflow-qemu/tree/next#building-the-stand-alone-connector-for-dynamic-loading
               cargoBuildFlags = [ "--workspace" "--all-features" ];
 
-              meta = with lib; with cargoTOML.package; {
+              meta = with cargoTOML.package; {
                 inherit description homepage;
                 downloadPage = https://github.com/memflow/memflow-qemu/releases;
-                license = licenses.mit;
+                license = lib.licenses.mit;
               };
             });
         };
 
         memflow-kmod = with pkgs;
           let
-            kvm = self.packages.${system}.memflow-kvm;
+            memflow-kvm = self.packages.${system}.memflow-kvm;
           in
           kernel: stdenv.mkDerivation {
-            pname = "memflow-kmod-${kvm.version}-${kvm.kernel.version}";
-            inherit (kvm) version src;
+            pname = "memflow-kmod-${memflow-kvm.version}-${memflow-kvm.kernel.version}";
+            inherit (memflow-kvm) version src;
 
             preBuild = ''
               sed -e "s@/lib/modules/\$(.*)@${kernel.dev}/lib/modules/${kernel.modDirVersion}@" -i Makefile
             '';
             installPhase = ''
-              install -D build/memflow.ko -t $out/lib/modules/${kernel.modDirVersion}/misc/
+              install -D ./build/memflow.ko -t $out/lib/modules/${kernel.modDirVersion}/misc/
             '';
-            dontStrip = true;
+
             hardeningDisable = [ "format" "pic" ];
             kernel = kernel.dev;
             nativeBuildInputs = kernel.moduleBuildDependencies;
-            meta = with lib; {
+
+            meta = {
               # See: https://github.com/memflow/memflow-kvm#licensing-note
-              license = with licenses; [ gpl2Only ];
+              license = lib.licenses.gpl2Only;
             };
           };
       }
