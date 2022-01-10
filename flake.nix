@@ -225,7 +225,7 @@
             memflow-kvm = self.packages.${system}.memflow-kvm;
           in
           kernel: stdenv.mkDerivation {
-            pname = "memflow-kmod-${memflow-kvm.version}-${memflow-kvm.kernel.version}";
+            pname = "memflow-kmod-${memflow-kvm.version}-${kernel.version}";
             inherit (memflow-kvm) version src;
 
             preBuild = ''
