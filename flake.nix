@@ -78,8 +78,8 @@
                 owner = "memflow";
                 repo = "memflow";
                 # See: https://github.com/memflow/memflow/commits/next
-                rev = "9461991d83937859a76648339c0587735f6d64ee";
-                sha256 = "sha256-nHNtWjswYWnzYOQ6v86ApvcvhY3XiAwAQJINax2nbzw=";
+                rev = "f43d70d7e33c8745d26cfc0d18cf4654ec4083ce";
+                sha256 = "sha256-Ni/C8TQHC6hvsqu4tj2nHQYEDcn+0ssLQ0h94OozUew=";
               };
               cargoTOML = (builtins.fromTOML (builtins.readFile (src + "/memflow/Cargo.toml")));
             in
@@ -97,7 +97,7 @@
                 self.packages.${system}.cglue-bindgen
               ];
 
-              cargoHash = "sha256-Mj23+M4ws+ZfaDop0QisTLCMjtTftgrQDr3cQNNSvXc=";
+              cargoHash = "sha256-IkT9dxTzfIcVaBspwUSNo6NYvwxJqHmt+bUDvAwpgu8=";
               cargoBuildFlags = [ "--workspace" "--all-features" ];
 
               outputs = [ "out" "dev" ]; # Create outputs for the FFI shared library & development headers
@@ -122,9 +122,9 @@
               src = pkgs.fetchFromGitHub {
                 owner = "memflow";
                 repo = "memflow-win32";
-                rev = "806ffe08c54b17bd8365ac5fb1fefe515d760130";
+                rev = "2788d9371ddc6f353883d9df8c2456446784d080";
                 # See: https://github.com/memflow/memflow-win32/commits/main
-                sha256 = "sha256-Gy4ZWXyGzU8442Jo+pH6GajWig7EnWwNdrOAX7cPHY0=";
+                sha256 = "sha256-nMcAdH39favxjQOhP5V6GX7zbzQlUH0LJ4OqmHFjDcA=";
               };
               cargoTOML = (builtins.fromTOML (builtins.readFile (src + "/Cargo.toml")));
             in
@@ -134,7 +134,7 @@
 
               inherit src;
 
-              cargoHash = "sha256-RpWWGKiCM9WgxIth+BmwZ+HB5YYnR6Ilos/nVp04IAU=";
+              cargoHash = "sha256-tcXIUV2EHVdFXq8hK1GBndrh3ZzGEF6+x2u6MRE98pQ=";
               cargoBuildFlags = [ "--workspace" "--all-features" ];
 
               meta = with lib; with cargoTOML.package; {
@@ -189,7 +189,7 @@
               src = pkgs.fetchFromGitHub {
                 owner = "memflow";
                 repo = "memflow-qemu";
-                # See: https://github.com/memflow/memflow-qemu/tree/next
+                # See: https://github.com/memflow/memflow-qemu/commits/next
                 rev = "1b6ab1ff69188b800f9c02c63cd2c0cd86796125";
                 sha256 = "sha256-DpGdPTckq8wH/5R0kKOZbz+piRSX/5yzdFOchck1Xmw=";
                 fetchSubmodules = true;
