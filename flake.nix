@@ -7,7 +7,7 @@
   };
 
   outputs = { self, nixpkgs, flake-utils, rust-overlay, ... } @ inputs:
-    flake-utils.lib.eachDefaultSystem (system:
+    (flake-utils.lib.eachDefaultSystem (system:
       let
         pkgs = import nixpkgs {
           inherit system;
@@ -24,15 +24,23 @@
           pkg-config-file = pkgs.writeTextFile {
             name = "memflow-ffi";
             destination = "/share/pkgconfig/memflow-ffi.pc";
-            text = with self.packages.${system}; ''
-              Name: memflow-ffi
-              Description: C bindings for the memflow physical memory introspection framework
-              Version: ${memflow.version}
+            text = with self.packages.${system};
+              let
+                # for some reason -l:libmemflow-ffi.a doesn't work
+                staticOnly = pkgs.runCommand "memflow-static" { } ''
+                  mkdir -p $out/lib
+                  ln -s ${memflow}/lib/libmemflow_ffi.a $out/lib
+                '';
+              in
+              ''
+                Name: memflow-ffi
+                Description: C bindings for the memflow physical memory introspection framework
+                Version: ${memflow.version}
 
-              Requires:
-              Libs: -L${memflow}/lib -l:libmemflow_ffi.a
-              Cflags: -I${memflow.dev}/include
-            '';
+                Requires:
+                Libs: -L${staticOnly}/lib -lmemflow_ffi
+                Cflags: -I${memflow.dev}/include
+              '';
           };
 
           cglue-bindgen =
@@ -161,7 +169,7 @@
               cargoTOML = (builtins.fromTOML (builtins.readFile (src + "/memflow-kvm/Cargo.toml")));
             in
             pkgs.rustPlatform.buildRustPackage (rec {
-              name = cargoTOML.package.name;
+              pname = cargoTOML.package.name;
               version = projectVersion cargoTOML src;
 
               inherit src;
@@ -169,7 +177,7 @@
               RUST_BACKTRACE = "full";
               LIBCLANG_PATH = "${pkgs.libclang.lib}/lib/"; # "thread 'main' panicked at 'Unable to find libclang"
 
-              cargoHash = "sha256-QbdxPdLMBAmDho3j0M2dWFhJjYaa2TyREAY4Wec5nz4=";
+              cargoHash = "sha256-3mEjoaC6GHwilg/iswHOUpYPAtZtY5PJnnF9sOE2tMw=";
               # Compile the KVM connector in the same way memflowup does to ensure it contains necessary exports
               cargoBuildFlags = [ "--workspace" "--all-features" ];
 
@@ -201,14 +209,14 @@
               cargoTOML = (builtins.fromTOML (builtins.readFile (src + "/Cargo.toml")));
             in
             pkgs.rustPlatform.buildRustPackage (rec {
-              name = cargoTOML.package.name;
+              pname = cargoTOML.package.name;
               version = projectVersion cargoTOML src;
 
               inherit src;
 
               doCheck = false;
 
-              cargoHash = "sha256-8Ba0utfeA2uKeB+SfSZPwusxiFGtRF3VmoO9+6CZ0O8=";
+              cargoHash = "sha256-tG1SVXvydVAsyuZvLlh6FM8skdgKojSAyk6QdSZ0fLY=";
               # See: https://github.com/memflow/memflow-qemu/tree/next#building-the-stand-alone-connector-for-dynamic-loading
               cargoBuildFlags = [ "--workspace" "--all-features" ];
 
@@ -225,7 +233,7 @@
             memflow-kvm = self.packages.${system}.memflow-kvm;
           in
           kernel: stdenv.mkDerivation {
-            pname = "memflow-kmod-${memflow-kvm.version}-${kernel.version}";
+            name = "memflow-kmod-${memflow-kvm.version}-${kernel.version}";
             inherit (memflow-kvm) version src;
 
             preBuild = ''
@@ -245,5 +253,47 @@
             };
           };
       }
-    );
+    )) //
+    {
+      nixosModule = { config, pkgs, lib, ... }:
+        let
+          cfg = config.memflow;
+        in
+        {
+          options.memflow = with lib; {
+            kvm.enable = mkEnableOption "Whether to enable memflow memory introspection framework for KVM";
+
+            kvm.loadModule = mkOption {
+              default = true;
+              type = types.bool;
+              description = "Automatically load the memflow KVM kernel module on boot";
+            };
+
+            kvm.kernelPatch = mkOption {
+              default = true;
+              type = types.bool;
+              description = "Kernel configuration that enables KALLSYMS_ALL";
+            };
+          };
+
+          config = with lib; mkIf cfg.kvm.enable {
+            boot.kernelPatches = mkIf cfg.kvm.kernelPatch [
+              {
+                name = "memflow-enable-kallsyms-all";
+                patch = null;
+                extraConfig = ''
+                  KALLSYMS_ALL y
+                '';
+              }
+            ];
+
+            system.requiredKernelConfig = with config.lib.kernelConfig; [
+              (isYes "KALLSYMS_ALL")
+            ];
+
+            boot.kernelModules = mkIf cfg.kvm.loadModule [ "memflow" ];
+            boot.extraModulePackages = [ (self.memflow-kmod.${pkgs.system} config.boot.kernelPackages.kernel) ];
+          };
+        };
+    };
 }
