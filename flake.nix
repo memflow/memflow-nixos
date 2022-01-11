@@ -281,9 +281,9 @@
               {
                 name = "memflow-enable-kallsyms-all";
                 patch = null;
-                structuredExtraConfig = with lib.kernel; {
-                  KALLSYMS_ALL = yes;
-                };
+                extraConfig = ''
+                  KALLSYMS_ALL y
+                '';
               }
             ];
 
