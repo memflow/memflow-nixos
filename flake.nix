@@ -86,8 +86,8 @@
                 owner = "memflow";
                 repo = "memflow";
                 # See: https://github.com/memflow/memflow/commits/next
-                rev = "f43d70d7e33c8745d26cfc0d18cf4654ec4083ce";
-                sha256 = "sha256-Ni/C8TQHC6hvsqu4tj2nHQYEDcn+0ssLQ0h94OozUew=";
+                rev = "330f651c199db47c9e253fc6bbff60008ead0042";
+                sha256 = "sha256-mblPqXIt4gLLON5NbIq0m728g+NMn2A0W2V51xwepbc=";
               };
               cargoTOML = (builtins.fromTOML (builtins.readFile (src + "/memflow/Cargo.toml")));
             in
@@ -105,7 +105,7 @@
                 self.packages.${system}.cglue-bindgen
               ];
 
-              cargoHash = "sha256-IkT9dxTzfIcVaBspwUSNo6NYvwxJqHmt+bUDvAwpgu8=";
+              cargoHash = "sha256-aFBSYcDA0sSWQF/Y2vmKZvB+50fEQqJOlaZRmYIaDhU=";
               cargoBuildFlags = [ "--workspace" "--all-features" ];
 
               outputs = [ "out" "dev" ]; # Create outputs for the FFI shared library & development headers
