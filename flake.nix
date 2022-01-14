@@ -86,8 +86,8 @@
                 owner = "memflow";
                 repo = "memflow";
                 # See: https://github.com/memflow/memflow/commits/next
-                rev = "330f651c199db47c9e253fc6bbff60008ead0042";
-                sha256 = "sha256-mblPqXIt4gLLON5NbIq0m728g+NMn2A0W2V51xwepbc=";
+                rev = "773799d45cb5d50962b30da80f4f1a3299d62efb";
+                sha256 = "sha256-R1Zuqdx9J+D8ZTXh7q/uy8meaXHKEtAMMJ7viE6A2fs=";
               };
               cargoTOML = (builtins.fromTOML (builtins.readFile (src + "/memflow/Cargo.toml")));
             in
@@ -105,7 +105,7 @@
                 self.packages.${system}.cglue-bindgen
               ];
 
-              cargoHash = "sha256-aFBSYcDA0sSWQF/Y2vmKZvB+50fEQqJOlaZRmYIaDhU=";
+              cargoHash = "sha256-hQxZU+LvOU6LYXD+3oys+aJWQiZ2BU/8gXJpntM1hKQ=";
               cargoBuildFlags = [ "--workspace" "--all-features" ];
 
               outputs = [ "out" "dev" ]; # Create outputs for the FFI shared library & development headers
@@ -134,9 +134,9 @@
               src = pkgs.fetchFromGitHub {
                 owner = "memflow";
                 repo = "memflow-win32";
-                rev = "2788d9371ddc6f353883d9df8c2456446784d080";
+                rev = "0001adbd0cb984b65f82297b4e1f40ce1120a085";
                 # See: https://github.com/memflow/memflow-win32/commits/main
-                sha256 = "sha256-nMcAdH39favxjQOhP5V6GX7zbzQlUH0LJ4OqmHFjDcA=";
+                sha256 = "sha256-O4oOMDne9Im/Cqh41JemofefyjYbbpL+kHVs+Ns7LHw=";
               };
               cargoTOML = (builtins.fromTOML (builtins.readFile (src + "/Cargo.toml")));
             in
@@ -146,7 +146,7 @@
 
               inherit src;
 
-              cargoHash = "sha256-tcXIUV2EHVdFXq8hK1GBndrh3ZzGEF6+x2u6MRE98pQ=";
+              cargoHash = "sha256-t+1ZPxiU8rsJw7qNkGuvpY1nEDYjJ7U11qZOj8Ofs5A=";
               cargoBuildFlags = [ "--workspace" "--all-features" ];
 
               meta = with cargoTOML.package; {
