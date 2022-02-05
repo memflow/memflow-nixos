@@ -4,6 +4,27 @@
   inputs = {
     flake-utils.url = github:numtide/flake-utils;
     rust-overlay.url = github:oxalica/rust-overlay;
+
+    cglue-bindgen = {
+      url = github:h33p/cglue;
+      flake = false;
+    };
+    memflow = {
+      url = github:memflow/memflow/next;
+      flake = false;
+    };
+    memflow-win32 = {
+      url = github:memflow/memflow-win32;
+      flake = false;
+    };
+    memflow-kvm = {
+      url = github:memflow/memflow-kvm/next;
+      flake = false;
+    };
+    memflow-qemu = {
+      url = github:memflow/memflow-qemu/next;
+      flake = false;
+    };
   };
 
   outputs = { self, nixpkgs, flake-utils, rust-overlay, ... } @ inputs:
@@ -45,13 +66,7 @@
 
           cglue-bindgen =
             let
-              src = pkgs.fetchFromGitHub {
-                owner = "h33p";
-                repo = "cglue";
-                # See: https://github.com/h33p/cglue/commits/main
-                rev = "d85d2e83bd6f5eb6331174fbdc322418031f051b";
-                sha256 = "sha256-S8c1+eado9Ov91OHN8XSqxBsixERJHZ3ZEtDmMYgyLY=";
-              };
+              src = inputs.cglue-bindgen;
               cargoTOML = (builtins.fromTOML (builtins.readFile (src + "/cglue-bindgen/Cargo.toml")));
             in
             pkgs.rustPlatform.buildRustPackage rec {
@@ -82,13 +97,7 @@
 
           memflow =
             let
-              src = pkgs.fetchFromGitHub {
-                owner = "memflow";
-                repo = "memflow";
-                # See: https://github.com/memflow/memflow/commits/next
-                rev = "773799d45cb5d50962b30da80f4f1a3299d62efb";
-                sha256 = "sha256-R1Zuqdx9J+D8ZTXh7q/uy8meaXHKEtAMMJ7viE6A2fs=";
-              };
+              src = inputs.memflow;
               cargoTOML = (builtins.fromTOML (builtins.readFile (src + "/memflow/Cargo.toml")));
             in
             pkgs.rustPlatform.buildRustPackage rec {
@@ -131,13 +140,7 @@
 
           memflow-win32 =
             let
-              src = pkgs.fetchFromGitHub {
-                owner = "memflow";
-                repo = "memflow-win32";
-                rev = "0001adbd0cb984b65f82297b4e1f40ce1120a085";
-                # See: https://github.com/memflow/memflow-win32/commits/main
-                sha256 = "sha256-O4oOMDne9Im/Cqh41JemofefyjYbbpL+kHVs+Ns7LHw=";
-              };
+              src = inputs.memflow-win32;
               cargoTOML = (builtins.fromTOML (builtins.readFile (src + "/Cargo.toml")));
             in
             pkgs.rustPlatform.buildRustPackage (rec {
@@ -158,14 +161,7 @@
 
           memflow-kvm =
             let
-              src = pkgs.fetchFromGitHub {
-                owner = "memflow";
-                repo = "memflow-kvm";
-                # See: https://github.com/memflow/memflow-kvm/commits/next
-                rev = "1c2875522fbe4d29df61d23e69233debabf8f198";
-                sha256 = "sha256-Nashl1rt5iobmD5w+E4Ct1/FYzwGkSw2eYgSNbTRix0=";
-                fetchSubmodules = true;
-              };
+              src = inputs.memflow-kvm;
               cargoTOML = (builtins.fromTOML (builtins.readFile (src + "/memflow-kvm/Cargo.toml")));
             in
             pkgs.rustPlatform.buildRustPackage (rec {
@@ -198,14 +194,7 @@
 
           memflow-qemu =
             let
-              src = pkgs.fetchFromGitHub {
-                owner = "memflow";
-                repo = "memflow-qemu";
-                # See: https://github.com/memflow/memflow-qemu/commits/next
-                rev = "1b6ab1ff69188b800f9c02c63cd2c0cd86796125";
-                sha256 = "sha256-DpGdPTckq8wH/5R0kKOZbz+piRSX/5yzdFOchck1Xmw=";
-                fetchSubmodules = true;
-              };
+              src = inputs.memflow-qemu;
               cargoTOML = (builtins.fromTOML (builtins.readFile (src + "/Cargo.toml")));
             in
             pkgs.rustPlatform.buildRustPackage (rec {
