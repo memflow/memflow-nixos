@@ -223,7 +223,13 @@
           in
           kernel: stdenv.mkDerivation {
             name = "memflow-kmod-${memflow-kvm.version}-${kernel.version}";
-            inherit (memflow-kvm) version src;
+            inherit (memflow-kvm) version;
+            src = builtins.fetchGit {
+              url = https://github.com/memflow/memflow-kvm.git;
+              ref = "next";
+              inherit (inputs.memflow-kvm) rev;
+              submodules = true;
+            };
 
             preBuild = ''
               sed -e "s@/lib/modules/\$(.*)@${kernel.dev}/lib/modules/${kernel.modDirVersion}@" -i Makefile
