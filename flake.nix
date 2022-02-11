@@ -1,4 +1,4 @@
-{
+rec {
   description = "memflow physical memory introspection framework";
 
   inputs = {
@@ -55,7 +55,7 @@
               in
               ''
                 Name: memflow-ffi
-                Description: C bindings for the memflow physical memory introspection framework
+                Description: C bindings for ${description}
                 Version: ${memflow.version}
 
                 Requires:
@@ -75,13 +75,13 @@
 
               inherit src;
 
-              cargoHash = "sha256-RyOwoope/r9kU1tqbAUUnpBPUM+t+R1syj7CnwBE2G8=";
+              cargoHash = "sha256-GTLOkjk02RWdLFTP+AzSlgn0Xurv39buLj4Izu3zT3U=";
 
               nativeBuildInputs = with pkgs; [ makeWrapper ];
 
               # cbindgen 0.20 (see: https://git.io/J9Gk2) & Rust nightly are needed for cglue-bindgen:
-              #   "ERROR: Parsing crate `memflow-ffi`: couldn't run `cargo rustc -Zunpretty=expanded`"
-              #   "error: the option `Z` is only accepted on the nightly compiler"
+              # "ERROR: Parsing crate `memflow-ffi`: couldn't run `cargo rustc -Zunpretty=expanded`"
+              # "error: the option `Z` is only accepted on the nightly compiler"
               postInstall = ''
                 wrapProgram $out/bin/cglue-bindgen \
                   --prefix PATH : ${lib.makeBinPath (with pkgs; [rust-cbindgen rust-bin.nightly.latest.default ])}
@@ -114,7 +114,7 @@
                 self.packages.${system}.cglue-bindgen
               ];
 
-              cargoHash = "sha256-hQxZU+LvOU6LYXD+3oys+aJWQiZ2BU/8gXJpntM1hKQ=";
+              cargoHash = "sha256-fmKoaanbJ2eo6tdAcqBB8K+i3QKSuh21Vx8WOy1I+8Y=";
               cargoBuildFlags = [ "--workspace" "--all-features" ];
 
               outputs = [ "out" "dev" ]; # Create outputs for the FFI shared library & development headers
@@ -248,46 +248,50 @@
             };
           };
       }
-    )) //
-    {
+    )) // {
       nixosModule = { config, pkgs, lib, ... }:
         let
           cfg = config.memflow;
         in
         {
           options.memflow = with lib; {
-            kvm.enable = mkEnableOption "Whether to enable memflow memory introspection framework for KVM";
+            kvm = {
+              enable = mkEnableOption "Whether to enable memflow memory introspection framework for KVM";
 
-            kvm.loadModule = mkOption {
-              default = true;
-              type = types.bool;
-              description = "Automatically load the memflow KVM kernel module on boot";
-            };
+              loadModule = mkOption {
+                default = true;
+                type = types.bool;
+                description = "Automatically load the memflow KVM kernel module on boot";
+              };
 
-            kvm.kernelPatch = mkOption {
-              default = true;
-              type = types.bool;
-              description = "Kernel configuration that enables KALLSYMS_ALL";
+              kernelPatch = mkOption {
+                default = true;
+                type = types.bool;
+                description = "Kernel configuration that enables KALLSYMS_ALL";
+              };
             };
           };
 
           config = with lib; mkIf cfg.kvm.enable {
-            boot.kernelPatches = mkIf cfg.kvm.kernelPatch [
-              {
-                name = "memflow-enable-kallsyms-all";
-                patch = null;
-                extraConfig = ''
-                  KALLSYMS_ALL y
-                '';
-              }
-            ];
+            boot = {
+              kernelPatches = mkIf cfg.kvm.kernelPatch [
+                {
+                  name = "memflow-enable-kallsyms-all";
+                  patch = null;
+                  extraConfig = ''
+                    KALLSYMS_ALL y
+                  '';
+                }
+              ];
+              kernelModules = mkIf cfg.kvm.loadModule [ "memflow" ];
+              extraModulePackages = [
+                (self.memflow-kmod.${pkgs.system} config.boot.kernelPackages.kernel)
+              ];
+            };
 
             system.requiredKernelConfig = with config.lib.kernelConfig; [
               (isYes "KALLSYMS_ALL")
             ];
-
-            boot.kernelModules = mkIf cfg.kvm.loadModule [ "memflow" ];
-            boot.extraModulePackages = [ (self.memflow-kmod.${pkgs.system} config.boot.kernelPackages.kernel) ];
           };
         };
     };

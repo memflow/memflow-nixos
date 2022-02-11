@@ -3,11 +3,11 @@
     "cglue-bindgen": {
       "flake": false,
       "locked": {
-        "lastModified": 1641700097,
-        "narHash": "sha256-S8c1+eado9Ov91OHN8XSqxBsixERJHZ3ZEtDmMYgyLY=",
+        "lastModified": 1644265345,
+        "narHash": "sha256-+gMM64weexoY9Wzz3ffkKo8+k7d0ZnSsrWKyLYie5b8=",
         "owner": "h33p",
         "repo": "cglue",
-        "rev": "d85d2e83bd6f5eb6331174fbdc322418031f051b",
+        "rev": "672473978984d7afb67121ac54e6550f31905bb8",
         "type": "github"
       },
       "original": {
@@ -49,11 +49,11 @@
     "memflow": {
       "flake": false,
       "locked": {
-        "lastModified": 1642164893,
-        "narHash": "sha256-R1Zuqdx9J+D8ZTXh7q/uy8meaXHKEtAMMJ7viE6A2fs=",
+        "lastModified": 1644264448,
+        "narHash": "sha256-GdR9BqURJuAZ9zbGe1EW/jn4q7V4SylxwM0Fq5rfDKI=",
         "owner": "memflow",
         "repo": "memflow",
-        "rev": "773799d45cb5d50962b30da80f4f1a3299d62efb",
+        "rev": "5b55e0a8fb3b9f607c6290d5436e285fd187ef7d",
         "type": "github"
       },
       "original": {
