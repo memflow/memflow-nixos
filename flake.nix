@@ -256,7 +256,10 @@ rec {
         {
           options.memflow = with lib; {
             kvm = {
-              enable = mkEnableOption "Whether to enable memflow memory introspection framework for KVM";
+              enable = mkEnableOption ''
+                Whether to enable memflow memory introspection framework for KVM. Users in the "memflow" group can
+                interact with the <command>/dev/memflow</command> device.
+              '';
 
               loadModule = mkOption {
                 default = true;
@@ -292,6 +295,11 @@ rec {
             system.requiredKernelConfig = with config.lib.kernelConfig; [
               (isYes "KALLSYMS_ALL")
             ];
+
+            users.groups.memflow = { };
+            services.udev.extraRules = ''
+              KERNEL=="memflow" SUBSYSTEM=="misc" GROUP="memflow" MODE="0660"
+            '';
           };
         };
     };
