@@ -3,11 +3,11 @@
     "cglue-bindgen": {
       "flake": false,
       "locked": {
-        "lastModified": 1644265345,
-        "narHash": "sha256-+gMM64weexoY9Wzz3ffkKo8+k7d0ZnSsrWKyLYie5b8=",
+        "lastModified": 1644789826,
+        "narHash": "sha256-h+7ngaFfsBSAFKFyisPutNZKvsPZh6zj6p87pR8lA54=",
         "owner": "h33p",
         "repo": "cglue",
-        "rev": "672473978984d7afb67121ac54e6550f31905bb8",
+        "rev": "71e9af414c1c81b5f0eb85c6dc784d6cd9043aa7",
         "type": "github"
       },
       "original": {

@@ -75,7 +75,7 @@ rec {
 
               inherit src;
 
-              cargoHash = "sha256-GTLOkjk02RWdLFTP+AzSlgn0Xurv39buLj4Izu3zT3U=";
+              cargoHash = "sha256-cpL/55qsdwBKcJALEX5AFAGf2Zkli8yCqw/bS18zRGU=";
 
               nativeBuildInputs = with pkgs; [ makeWrapper ];
 
