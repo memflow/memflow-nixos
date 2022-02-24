@@ -10,7 +10,7 @@ rec {
       flake = false;
     };
     memflow = {
-      url = github:memflow/memflow/next;
+      url = github:memflow/memflow;
       flake = false;
     };
     memflow-win32 = {
@@ -18,11 +18,14 @@ rec {
       flake = false;
     };
     memflow-kvm = {
-      url = github:memflow/memflow-kvm/next;
+      url = https://github.com/memflow/memflow-kvm.git;
+      type = "git";
+      ref = "main";
+      submodules = true;
       flake = false;
     };
     memflow-qemu = {
-      url = github:memflow/memflow-qemu/next;
+      url = github:memflow/memflow-qemu;
       flake = false;
     };
   };
@@ -75,7 +78,7 @@ rec {
 
               inherit src;
 
-              cargoHash = "sha256-cpL/55qsdwBKcJALEX5AFAGf2Zkli8yCqw/bS18zRGU=";
+              cargoHash = "sha256-wq44q6Z9IfJomivDpNWA7bIxIS6zwvCcLKi4QuhvPzk=";
 
               nativeBuildInputs = with pkgs; [ makeWrapper ];
 
@@ -114,7 +117,7 @@ rec {
                 self.packages.${system}.cglue-bindgen
               ];
 
-              cargoHash = "sha256-fmKoaanbJ2eo6tdAcqBB8K+i3QKSuh21Vx8WOy1I+8Y=";
+              cargoHash = "sha256-gKhHuqt1h0BeWJK0uAaGCNzVAtxN2kmelVZX1eLuv2s=";
               cargoBuildFlags = [ "--workspace" "--all-features" ];
 
               outputs = [ "out" "dev" ]; # Create outputs for the FFI shared library & development headers
@@ -149,7 +152,7 @@ rec {
 
               inherit src;
 
-              cargoHash = "sha256-t+1ZPxiU8rsJw7qNkGuvpY1nEDYjJ7U11qZOj8Ofs5A=";
+              cargoHash = "sha256-g0mjvCVVSt1q6FjH/1/aYuPdliCkk4ikyEziYVZMJIs=";
               cargoBuildFlags = [ "--workspace" "--all-features" ];
 
               meta = with cargoTOML.package; {
@@ -171,19 +174,22 @@ rec {
               inherit src;
 
               RUST_BACKTRACE = "full";
-              LIBCLANG_PATH = "${pkgs.libclang.lib}/lib/"; # "thread 'main' panicked at 'Unable to find libclang"
+              # memflow-kvm-ioctl has a custom build command that requires libclang to be found at the path specified by
+              # the "LIBCLANG_PATH" environment variable: "thread 'main' panicked at 'Unable to find libclang" ...
+              # "set the `LIBCLANG_PATH` environment variable to a path where one of these files can be found"
+              LIBCLANG_PATH = "${pkgs.libclang.lib}/lib/";
+              # Workarounds for bindgen being unable to find Linux & libc development headers
+              # See: https://github.com/search?p=1&q=language%3Anix+BINDGEN_EXTRA_CLANG_ARGS&type=Code
+              BINDGEN_EXTRA_CLANG_ARGS = lib.concatStringsSep " " [
+                "-I${pkgs.linuxHeaders}/include" # "fatal error: 'linux/types.h' file not found"
+                # "wrapper.h:2:10: fatal error: 'stddef.h' file not found"
+                "-isystem ${pkgs.llvmPackages.libclang.lib}/lib/clang/${lib.getVersion pkgs.clang}/include"
+                # "-isystem ${pkgs.llvmPackages.clang}/resource-root/include" # Also works
+              ];
 
-              cargoHash = "sha256-3mEjoaC6GHwilg/iswHOUpYPAtZtY5PJnnF9sOE2tMw=";
+              cargoHash = "sha256-nA1Tu1Lbbn8BWH+ZvqRF//dzPd1cZF+XNf4Cb1TXyMg=";
               # Compile the KVM connector in the same way memflowup does to ensure it contains necessary exports
               cargoBuildFlags = [ "--workspace" "--all-features" ];
-
-              buildInputs = with pkgs; [
-                llvmPackages.libclang
-              ];
-              nativeBuildInputs = with pkgs; [
-                # FIXME: not sure what the correct package to use here is?
-                rust-bindgen # "./mabi.h:14:10: fatal error: 'linux/types.h' file not found"
-              ];
 
               meta = with cargoTOML.package; {
                 inherit description homepage;
@@ -205,7 +211,7 @@ rec {
 
               doCheck = false;
 
-              cargoHash = "sha256-tG1SVXvydVAsyuZvLlh6FM8skdgKojSAyk6QdSZ0fLY=";
+              cargoHash = "sha256-TxfDVBio73ZhxJ3hVeavQehERrJ0HSBwf3ti9SyALhU=";
               # See: https://github.com/memflow/memflow-qemu/tree/next#building-the-stand-alone-connector-for-dynamic-loading
               cargoBuildFlags = [ "--workspace" "--all-features" ];
 
@@ -223,13 +229,7 @@ rec {
           in
           kernel: stdenv.mkDerivation {
             name = "memflow-kmod-${memflow-kvm.version}-${kernel.version}";
-            inherit (memflow-kvm) version;
-            src = builtins.fetchGit {
-              url = https://github.com/memflow/memflow-kvm.git;
-              ref = "next";
-              inherit (inputs.memflow-kvm) rev;
-              submodules = true;
-            };
+            inherit (memflow-kvm) version src;
 
             preBuild = ''
               sed -e "s@/lib/modules/\$(.*)@${kernel.dev}/lib/modules/${kernel.modDirVersion}@" -i Makefile
