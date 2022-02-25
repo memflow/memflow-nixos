@@ -152,7 +152,7 @@ rec {
 
               inherit src;
 
-              cargoHash = "sha256-g0mjvCVVSt1q6FjH/1/aYuPdliCkk4ikyEziYVZMJIs=";
+              cargoHash = "sha256-WPbS2bqPItCjkT5wNRMWHCMozcBK3xA8jyv62JPY4yM=";
               cargoBuildFlags = [ "--workspace" "--all-features" ];
 
               meta = with cargoTOML.package; {
