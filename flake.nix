@@ -2,7 +2,6 @@ rec {
   description = "memflow physical memory introspection framework";
 
   inputs = {
-    flake-utils.url = github:numtide/flake-utils;
     rust-overlay.url = github:oxalica/rust-overlay;
 
     cglue-bindgen = {
