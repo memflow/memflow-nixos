@@ -9,10 +9,14 @@ rec {
       url = github:h33p/cglue;
       flake = false;
     };
+
     memflow = {
       url = github:memflow/memflow;
       flake = false;
     };
+
+    # Connector plugins
+
     memflow-win32 = {
       url = github:memflow/memflow-win32;
       flake = false;
@@ -26,6 +30,25 @@ rec {
     };
     memflow-qemu = {
       url = github:memflow/memflow-qemu;
+      flake = false;
+    };
+    memflow-coredump = {
+      url = github:weewoo22/memflow-coredump;
+      flake = false;
+    };
+    memflow-native = {
+      url = github:memflow/memflow-native;
+      flake = false;
+    };
+    memflow-kcore = {
+      url = github:memflow/memflow-kcore;
+      flake = false;
+    };
+
+    # Applications
+
+    cloudflow = {
+      url = github:weewoo22/cloudflow;
       flake = false;
     };
   };
@@ -218,6 +241,99 @@ rec {
               meta = with cargoTOML.package; {
                 inherit description homepage;
                 downloadPage = https://github.com/memflow/memflow-qemu/releases;
+                license = lib.licenses.mit;
+              };
+            });
+
+          memflow-coredump =
+            let
+              src = inputs.memflow-qemu;
+              cargoTOML = (builtins.fromTOML (builtins.readFile (src + "/Cargo.toml")));
+            in
+            pkgs.rustPlatform.buildRustPackage (rec {
+              pname = cargoTOML.package.name;
+              version = projectVersion cargoTOML src;
+
+              inherit src;
+
+              doCheck = false;
+
+              cargoHash = "sha256-TxfDVBio73ZhxJ3hVeavQehERrJ0HSBwf3ti9SyALhU=";
+              cargoBuildFlags = [ "--workspace" "--all-features" ];
+
+              meta = with cargoTOML.package; {
+                inherit description homepage;
+                downloadPage = https://github.com/memflow/memflow-coredump/releases;
+                license = lib.licenses.mit;
+              };
+            });
+
+          memflow-native =
+            let
+              src = inputs.memflow-native;
+              cargoTOML = (builtins.fromTOML (builtins.readFile (src + "/Cargo.toml")));
+            in
+            pkgs.rustPlatform.buildRustPackage (rec {
+              pname = cargoTOML.package.name;
+              version = projectVersion cargoTOML src;
+
+              inherit src;
+
+              cargoHash = "sha256-otqXyBXpGji7MB8cXTAgVPb3/DuZ024OMxQX1C7NOSE=";
+              cargoBuildFlags = [ "--all-features" ];
+
+              meta = with cargoTOML.package; {
+                inherit description homepage;
+                downloadPage = https://github.com/memflow/memflow-native/releases;
+                license = lib.licenses.mit;
+              };
+            });
+
+          memflow-kcore =
+            let
+              src = inputs.memflow-kcore;
+              cargoTOML = (builtins.fromTOML (builtins.readFile (src + "/Cargo.toml")));
+            in
+            pkgs.rustPlatform.buildRustPackage (rec {
+              pname = cargoTOML.package.name;
+              version = projectVersion cargoTOML src;
+
+              inherit src;
+
+              cargoHash = "sha256-tESlNd1vHOCfMrtYjyli3rq/XnU/HwpLLfd+/X4hksM=";
+              cargoBuildFlags = [ "--all-features" ];
+
+              meta = with cargoTOML.package; {
+                inherit description homepage;
+                downloadPage = https://github.com/memflow/memflow-kcore/releases;
+                license = lib.licenses.mit;
+              };
+            });
+
+          cloudflow =
+            let
+              src = inputs.cloudflow;
+              cargoTOML = (builtins.fromTOML (builtins.readFile (src + "/cloudflow/Cargo.toml")));
+            in
+            pkgs.rustPlatform.buildRustPackage (rec {
+              pname = cargoTOML.package.name;
+              version = projectVersion cargoTOML src;
+
+              inherit src;
+
+              cargoHash = "sha256-J6RFaMlJIx/W9X5YoGvfOQSvgBNI/IR7SvWvSM0xCJc=";
+              cargoBuildFlags = [ "--all-features" ];
+
+              buildInputs = with pkgs; [
+                # --- stderr
+                # thread 'main' panicked at 'called `Result::unwrap()` on an `Err` value: Could not run `"pkg-config" "--libs" "--cflags" "fuse" "fuse >= 2.6.0"`
+                # The pkg-config command could not be found.
+                pkg-config
+              ];
+
+              meta = with cargoTOML.package; {
+                inherit description homepage;
+                downloadPage = https://github.com/memflow/cloudflow/releases;
                 license = lib.licenses.mit;
               };
             });
