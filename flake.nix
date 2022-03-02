@@ -145,8 +145,8 @@ rec {
                 Version: ${version}
 
                 Requires:
-                Cflags: -I''${includedir}
-                Libs: -L''${libdir} -lmemflow_ffi
+                Cflags: -I\''${includedir}
+                Libs: -L\''${libdir} -lmemflow_ffi
                 EOF
               '';
 
