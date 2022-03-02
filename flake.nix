@@ -317,11 +317,11 @@ rec {
               cargoHash = "sha256-J6RFaMlJIx/W9X5YoGvfOQSvgBNI/IR7SvWvSM0xCJc=";
               cargoBuildFlags = [ "--all-features" ];
 
-              buildInputs = with pkgs; [
-                # --- stderr
-                # thread 'main' panicked at 'called `Result::unwrap()` on an `Err` value: Could not run `"pkg-config" "--libs" "--cflags" "fuse" "fuse >= 2.6.0"`
-                # The pkg-config command could not be found.
+              nativeBuildInputs = with pkgs; [
                 pkg-config
+              ];
+              buildInputs = with pkgs; [
+                fuse
               ];
 
               meta = with cargoTOML.package; {
