@@ -137,8 +137,8 @@ rec {
               postInstall = ''
                 mkdir -vp "$dev/lib/pkgconfig/"
                 cat << EOF > $dev/lib/pkgconfig/memflow-ffi.pc
-                libdir=${memflow.out}/lib
-                includedir=${memflow.dev}/include
+                libdir=$out/lib
+                includedir=$dev/include
 
                 Name: memflow-ffi
                 Description: C bindings for ${description}
