@@ -88,7 +88,9 @@ rec {
 
               inherit src;
 
-              cargoHash = "sha256-wq44q6Z9IfJomivDpNWA7bIxIS6zwvCcLKi4QuhvPzk=";
+              cargoLock = {
+                lockFile = "${src}/Cargo.lock";
+              };
 
               nativeBuildInputs = with pkgs; [ makeWrapper ];
 
@@ -136,7 +138,9 @@ rec {
                 self.packages.${system}.cglue-bindgen
               ];
 
-              cargoHash = "sha256-gKhHuqt1h0BeWJK0uAaGCNzVAtxN2kmelVZX1eLuv2s=";
+              cargoLock = {
+                lockFile = "${src}/Cargo.lock";
+              };
               cargoBuildFlags = [ "--workspace" "--all-features" ];
 
               outputs = [ "out" "dev" ]; # Create outputs for the FFI shared library & development headers
@@ -201,7 +205,9 @@ rec {
                 # "-isystem ${pkgs.llvmPackages.clang}/resource-root/include" # Also works
               ];
 
-              cargoHash = "sha256-nA1Tu1Lbbn8BWH+ZvqRF//dzPd1cZF+XNf4Cb1TXyMg=";
+              cargoLock = {
+                lockFile = "${src}/Cargo.lock";
+              };
               # Compile the KVM connector in the same way memflowup does to ensure it contains necessary exports
               cargoBuildFlags = [ "--workspace" "--all-features" ];
 
@@ -224,7 +230,9 @@ rec {
 
               inherit src;
 
-              cargoHash = "sha256-WPbS2bqPItCjkT5wNRMWHCMozcBK3xA8jyv62JPY4yM=";
+              cargoLock = {
+                lockFile = "${src}/Cargo.lock";
+              };
               cargoBuildFlags = [ "--workspace" "--all-features" ];
 
               meta = with cargoTOML.package; {
@@ -247,7 +255,9 @@ rec {
 
               doCheck = false;
 
-              cargoHash = "sha256-TxfDVBio73ZhxJ3hVeavQehERrJ0HSBwf3ti9SyALhU=";
+              cargoLock = {
+                lockFile = "${src}/Cargo.lock";
+              };
               # See: https://github.com/memflow/memflow-qemu/tree/next#building-the-stand-alone-connector-for-dynamic-loading
               cargoBuildFlags = [ "--workspace" "--all-features" ];
 
@@ -271,7 +281,9 @@ rec {
 
               doCheck = false;
 
-              cargoHash = "sha256-TxfDVBio73ZhxJ3hVeavQehERrJ0HSBwf3ti9SyALhU=";
+              cargoLock = {
+                lockFile = "${src}/Cargo.lock";
+              };
               cargoBuildFlags = [ "--workspace" "--all-features" ];
 
               meta = with cargoTOML.package; {
@@ -292,7 +304,9 @@ rec {
 
               inherit src;
 
-              cargoHash = "sha256-otqXyBXpGji7MB8cXTAgVPb3/DuZ024OMxQX1C7NOSE=";
+              cargoLock = {
+                lockFile = "${src}/Cargo.lock";
+              };
               cargoBuildFlags = [ "--all-features" ];
 
               meta = with cargoTOML.package; {
@@ -313,7 +327,9 @@ rec {
 
               inherit src;
 
-              cargoHash = "sha256-tESlNd1vHOCfMrtYjyli3rq/XnU/HwpLLfd+/X4hksM=";
+              cargoLock = {
+                lockFile = "${src}/Cargo.lock";
+              };
               cargoBuildFlags = [ "--all-features" ];
 
               meta = with cargoTOML.package; {
@@ -334,7 +350,12 @@ rec {
 
               inherit src;
 
-              cargoHash = "sha256-J6RFaMlJIx/W9X5YoGvfOQSvgBNI/IR7SvWvSM0xCJc=";
+              cargoLock = {
+                lockFile = "${src}/Cargo.lock";
+                outputHashes = {
+                  "minidump-writer-0.1.0" = "sha256-tlwVlYQyAl5w7ObZLSzVBEqgiwFUUaioJOvbGCC6Jd4=";
+                };
+              };
               cargoBuildFlags = [ "--workspace" "--all-features" ];
 
               nativeBuildInputs = with pkgs; [
@@ -367,7 +388,9 @@ rec {
 
               inherit src;
 
-              cargoHash = "sha256-J6RFaMlJasdsjkdfhjaksdfjhBNI/IR7SvWvSM0xCJc=";
+              cargoLock = {
+                lockFile = "${src}/Cargo.lock";
+              };
               cargoBuildFlags = [ "--all-features" ];
 
               meta = with cargoTOML.package; {
