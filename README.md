@@ -4,7 +4,7 @@
 {
   inputs = {
     zig-overlay.url = github:arqv/zig-overlay;
-    memflow.url = github:weewoo22/memflow-nixos;
+    memflow.url = github:memflow/memflow-nixos;
   };
 
   outputs = { self, nixpkgs, flake-utils, zig-overlay, ... } @ inputs:
@@ -28,7 +28,7 @@
           inputs.memflow.packages.${system};
       in
       {
-        defaultPackage = pkgs.mkShell {
+        devShell = pkgs.mkShell {
           MEMFLOW_CONNECTOR_INVENTORY_PATHS = with memflowPkgs; lib.concatStringsSep ";" [
             # Memflow connector plugins
             "${memflow-kvm}/lib/" # KVM Connector

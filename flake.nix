@@ -50,20 +50,75 @@ rec {
       url = github:weewoo22/cloudflow;
       flake = false;
     };
+    scanflow = {
+      url = github:memflow/scanflow;
+      flake = false;
+    };
+    reflow = {
+      url = github:memflow/reflow;
+      flake = false;
+    };
   };
 
   outputs = { self, nixpkgs, flake-utils, rust-overlay, ... } @ inputs:
+    let
+      # Function that creates the package derivation version string from the Cargo TOML version & git rev hash.
+      # I'm including both the Cargo TOML version number and short VCS hash for disambiguation.
+      projectVersion = cargoTOML: src: "${cargoTOML.package.version}+${builtins.substring 0 7 src.rev}";
+      pkgForSystem = system: import nixpkgs {
+        inherit system;
+        overlays = [ (import rust-overlay) ];
+      };
+    in
     (flake-utils.lib.eachSystem [ "x86_64-linux" "aarch64-linux" ] (system:
       let
-        pkgs = import nixpkgs {
-          inherit system;
-          overlays = [ (import rust-overlay) ];
-        };
+        pkgs = pkgForSystem system;
         lib = pkgs.lib;
+      in
+      {
+        packages = {
+          memflow-kvm =
+            let
+              src = inputs.memflow-kvm;
+              cargoTOML = (builtins.fromTOML (builtins.readFile (src + "/memflow-kvm/Cargo.toml")));
+            in
+            pkgs.rustPlatform.buildRustPackage (rec {
+              pname = cargoTOML.package.name;
+              version = projectVersion cargoTOML src;
 
-        # Function that creates the package derivation version string from the Cargo TOML version & git rev hash.
-        # I'm including both the Cargo TOML version number and short VCS hash for disambiguation.
-        projectVersion = cargoTOML: src: "${cargoTOML.package.version}+${builtins.substring 0 7 src.rev}";
+              inherit src;
+
+              RUST_BACKTRACE = "full";
+              # memflow-kvm-ioctl has a custom build command that requires libclang to be found at the path specified by
+              # the "LIBCLANG_PATH" environment variable: "thread 'main' panicked at 'Unable to find libclang" ...
+              # "set the `LIBCLANG_PATH` environment variable to a path where one of these files can be found"
+              LIBCLANG_PATH = "${pkgs.libclang.lib}/lib/";
+              # Workarounds for bindgen being unable to find Linux & libc development headers
+              # See: https://github.com/search?p=1&q=language%3Anix+BINDGEN_EXTRA_CLANG_ARGS&type=Code
+              BINDGEN_EXTRA_CLANG_ARGS = lib.concatStringsSep " " [
+                "-I${pkgs.linuxHeaders}/include" # "fatal error: 'linux/types.h' file not found"
+                # "wrapper.h:2:10: fatal error: 'stddef.h' file not found"
+                "-isystem ${pkgs.llvmPackages.libclang.lib}/lib/clang/${lib.getVersion pkgs.clang}/include"
+                # "-isystem ${pkgs.llvmPackages.clang}/resource-root/include" # Also works
+              ];
+
+              cargoHash = "sha256-nA1Tu1Lbbn8BWH+ZvqRF//dzPd1cZF+XNf4Cb1TXyMg=";
+              # Compile the KVM connector in the same way memflowup does to ensure it contains necessary exports
+              cargoBuildFlags = [ "--workspace" "--all-features" ];
+
+              meta = with cargoTOML.package; with lib; {
+                inherit description homepage;
+                downloadPage = https://github.com/memflow/memflow-kvm/releases;
+                license = licenses.mit;
+                platforms = platforms.linux;
+              };
+            });
+        };
+      }
+    )) // (flake-utils.lib.eachDefaultSystem (system:
+      let
+        pkgs = pkgForSystem system;
+        lib = pkgs.lib;
       in
       {
         packages = {
@@ -112,6 +167,15 @@ rec {
               # Test suites are often failing for next branch commits since it's bleeding edge. Sometimes non-passing
               # commits include important fixes so we'll pin each package derivation to use a known working commit.
               doCheck = false;
+
+              MEMFLOW_EXTRA_PLUGIN_PATHS = lib.concatStringsSep ";" (with self.packages.${system}; [
+                "${memflow-win32}/lib/"
+                # "${memflow-kvm}/lib/"
+                "${memflow-qemu}/lib/"
+                "${memflow-coredump}/lib/"
+                "${memflow-native}/lib/"
+                "${memflow-kcore}/lib/"
+              ]);
 
               nativeBuildInputs = with pkgs; [
                 self.packages.${system}.cglue-bindgen
@@ -174,42 +238,6 @@ rec {
               meta = with cargoTOML.package; {
                 inherit description homepage;
                 downloadPage = https://github.com/memflow/memflow-win32/releases;
-                license = lib.licenses.mit;
-              };
-            });
-
-          memflow-kvm =
-            let
-              src = inputs.memflow-kvm;
-              cargoTOML = (builtins.fromTOML (builtins.readFile (src + "/memflow-kvm/Cargo.toml")));
-            in
-            pkgs.rustPlatform.buildRustPackage (rec {
-              pname = cargoTOML.package.name;
-              version = projectVersion cargoTOML src;
-
-              inherit src;
-
-              RUST_BACKTRACE = "full";
-              # memflow-kvm-ioctl has a custom build command that requires libclang to be found at the path specified by
-              # the "LIBCLANG_PATH" environment variable: "thread 'main' panicked at 'Unable to find libclang" ...
-              # "set the `LIBCLANG_PATH` environment variable to a path where one of these files can be found"
-              LIBCLANG_PATH = "${pkgs.libclang.lib}/lib/";
-              # Workarounds for bindgen being unable to find Linux & libc development headers
-              # See: https://github.com/search?p=1&q=language%3Anix+BINDGEN_EXTRA_CLANG_ARGS&type=Code
-              BINDGEN_EXTRA_CLANG_ARGS = lib.concatStringsSep " " [
-                "-I${pkgs.linuxHeaders}/include" # "fatal error: 'linux/types.h' file not found"
-                # "wrapper.h:2:10: fatal error: 'stddef.h' file not found"
-                "-isystem ${pkgs.llvmPackages.libclang.lib}/lib/clang/${lib.getVersion pkgs.clang}/include"
-                # "-isystem ${pkgs.llvmPackages.clang}/resource-root/include" # Also works
-              ];
-
-              cargoHash = "sha256-nA1Tu1Lbbn8BWH+ZvqRF//dzPd1cZF+XNf4Cb1TXyMg=";
-              # Compile the KVM connector in the same way memflowup does to ensure it contains necessary exports
-              cargoBuildFlags = [ "--workspace" "--all-features" ];
-
-              meta = with cargoTOML.package; {
-                inherit description homepage;
-                downloadPage = https://github.com/memflow/memflow-kvm/releases;
                 license = lib.licenses.mit;
               };
             });
@@ -315,18 +343,44 @@ rec {
               inherit src;
 
               cargoHash = "sha256-J6RFaMlJIx/W9X5YoGvfOQSvgBNI/IR7SvWvSM0xCJc=";
-              cargoBuildFlags = [ "--all-features" ];
+              cargoBuildFlags = [ "--workspace" "--all-features" ];
 
               nativeBuildInputs = with pkgs; [
                 pkg-config
+                makeWrapper
               ];
               buildInputs = with pkgs; [
                 fuse
               ];
 
+              # postInstall = with pkgs; ''
+              #   wrapProgram $out/bin/cloudflow --prefix PATH : ${lib.makeBinPath [sudo]}
+              # '';
+
               meta = with cargoTOML.package; {
                 inherit description homepage;
                 downloadPage = https://github.com/memflow/cloudflow/releases;
+                license = lib.licenses.mit;
+              };
+            });
+
+          scanflow =
+            let
+              src = inputs.scanflow;
+              cargoTOML = (builtins.fromTOML (builtins.readFile (src + "/scanflow/Cargo.toml")));
+            in
+            pkgs.rustPlatform.buildRustPackage (rec {
+              pname = cargoTOML.package.name;
+              version = projectVersion cargoTOML src;
+
+              inherit src;
+
+              cargoHash = "sha256-J6RFaMlJasdsjkdfhjaksdfjhBNI/IR7SvWvSM0xCJc=";
+              cargoBuildFlags = [ "--all-features" ];
+
+              meta = with cargoTOML.package; {
+                inherit description homepage;
+                downloadPage = https://github.com/memflow/scanflow/releases;
                 license = lib.licenses.mit;
               };
             });
@@ -354,6 +408,7 @@ rec {
             meta = {
               # See: https://github.com/memflow/memflow-kvm#licensing-note
               license = lib.licenses.gpl2Only;
+              platforms = platforms.linux;
             };
           };
       }
@@ -381,6 +436,12 @@ rec {
                 type = types.bool;
                 description = "Kernel configuration that enables KALLSYMS_ALL";
               };
+            };
+
+            cloudflow = {
+              enable = mkEnableOption ''
+                Whether to enable cloudflow service and FUSE file system mounting
+              '';
             };
           };
 
