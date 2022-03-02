@@ -67,28 +67,6 @@ rec {
       in
       {
         packages = {
-          pkg-config-file = pkgs.writeTextFile {
-            name = "memflow-ffi";
-            destination = "/share/pkgconfig/memflow-ffi.pc";
-            text = with self.packages.${system};
-              let
-                # for some reason -l:libmemflow-ffi.a doesn't work
-                staticOnly = pkgs.runCommand "memflow-static" { } ''
-                  mkdir -p $out/lib
-                  ln -s ${memflow}/lib/libmemflow_ffi.a $out/lib
-                '';
-              in
-              ''
-                Name: memflow-ffi
-                Description: C bindings for ${description}
-                Version: ${memflow.version}
-
-                Requires:
-                Libs: -L${staticOnly}/lib -lmemflow_ffi
-                Cflags: -I${memflow.dev}/include
-              '';
-          };
-
           cglue-bindgen =
             let
               src = inputs.cglue-bindgen;
@@ -154,6 +132,22 @@ rec {
                   -l C++ --output /dev/null || true
                 cglue-bindgen -c memflow-ffi/cglue.toml -- --config memflow-ffi/cbindgen.toml --crate memflow-ffi \
                   -l C++ --output $dev/include/memflow_cpp.h
+              '';
+
+              postInstall = ''
+                mkdir -vp "$dev/lib/pkgconfig/"
+                cat << EOF > $dev/lib/pkgconfig/memflow-ffi.pc
+                libdir=${memflow.out}/lib
+                includedir=${memflow.dev}/include
+
+                Name: memflow-ffi
+                Description: C bindings for ${description}
+                Version: ${version}
+
+                Requires:
+                Cflags: -I$\{includedir}
+                Libs: -L$\{libdir} -lmemflow_ffi
+                EOF
               '';
 
               meta = with cargoTOML.package; {
