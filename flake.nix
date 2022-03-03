@@ -65,14 +65,14 @@ rec {
       # Function that creates the package derivation version string from the Cargo TOML version & git rev hash.
       # I'm including both the Cargo TOML version number and short VCS hash for disambiguation.
       projectVersion = cargoTOML: src: "${cargoTOML.package.version}+${builtins.substring 0 7 src.rev}";
-      pkgForSystem = system: import nixpkgs {
+      pkgsForSystem = system: import nixpkgs {
         inherit system;
         overlays = [ (import rust-overlay) ];
       };
     in
     (flake-utils.lib.eachDefaultSystem (system:
       let
-        pkgs = pkgForSystem system;
+        pkgs = pkgsForSystem system;
         lib = pkgs.lib;
       in
       {
@@ -366,9 +366,9 @@ rec {
                 fuse
               ];
 
-              # postInstall = with pkgs; ''
-              #   wrapProgram $out/bin/cloudflow --prefix PATH : ${lib.makeBinPath [sudo]}
-              # '';
+              postInstall = with pkgs; ''
+                wrapProgram $out/bin/cloudflow --prefix PATH : ${lib.makeBinPath [sudo]}
+              '';
 
               meta = with cargoTOML.package; {
                 inherit description homepage;
