@@ -232,7 +232,7 @@ rec {
                 cargoLock = {
                   lockFile = "${src}/Cargo.lock";
                   outputHashes = {
-                    "criterion-0.3.2" = lib.fakeHash;
+                    "criterion-0.3.2" = "sha256-pCb+2DJEeNsHQ/gDUPyCSo0kvFpHW6Uwoz1JePyj68s=";
                   };
                 };
                 cargoBuildFlags = [ "--workspace" "--all-features" ];
