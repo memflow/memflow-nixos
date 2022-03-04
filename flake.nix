@@ -155,7 +155,7 @@ rec {
             cglue-bindgen = import ./pkgs/applications/cglue-bindgen (commonPkgInputs // { inherit pkgs; });
             cloudflow = import ./pkgs/applications/cloudflow (commonPkgInputs // { inherit system linuxSystems pkgs; });
             scanflow = import ./pkgs/applications/scanflow (commonPkgInputs // { inherit pkgs; });
-            reflow = import ./pkgs/applications/reflow (commonPkgInputs // { inherit pkgs; });
+            reflow = import ./pkgs/applications/reflow (commonPkgInputs // { inherit pkgs description; });
           };
         }
       ))) // {

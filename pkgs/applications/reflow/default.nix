@@ -1,4 +1,4 @@
-{ inputs, pkgs, lib, projectVersion }:
+{ inputs, pkgs, lib, projectVersion, description }:
 
 let
   src = inputs.reflow;
@@ -18,13 +18,17 @@ pkgs.rustPlatform.buildRustPackage (rec {
   };
   cargoBuildFlags = [ "--all-features" ];
 
+  nativeBuildInputs = with pkgs; [
+    pkg-config
+  ];
   buildInputs = with pkgs; [
     unicorn
   ];
 
-  meta = with cargoTOML.package; {
+  meta = with cargoTOML.package;{
     inherit description homepage;
     downloadPage = https://github.com/memflow/reflow/releases;
     license = lib.licenses.mit;
+    broken = true;
   };
 })
