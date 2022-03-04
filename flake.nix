@@ -218,7 +218,7 @@ rec {
 
                 MEMFLOW_EXTRA_PLUGIN_PATHS = lib.concatStringsSep ";" (with self.packages.${system}; [
                   "${memflow-win32}/lib/"
-                  # "${memflow-kvm}/lib/"
+                  (lib.optionalString (builtins.elem system linuxSystems) "${memflow-kvm}/lib/")
                   "${memflow-qemu}/lib/"
                   "${memflow-coredump}/lib/"
                   "${memflow-native}/lib/"
@@ -421,9 +421,9 @@ rec {
                   fuse
                 ];
 
-                # postInstall = with pkgs; ''
-                #   wrapProgram $out/bin/cloudflow --prefix PATH : ${lib.makeBinPath [sudo]}
-                # '';
+                postInstall = lib.optionalString (builtins.elem system linuxSystems) (with pkgs; ''
+                  wrapProgram $out/bin/cloudflow --prefix PATH : ${lib.makeBinPath [sudo]}
+                '');
 
                 meta = with cargoTOML.package; {
                   inherit description homepage;
