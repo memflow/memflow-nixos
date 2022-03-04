@@ -421,9 +421,9 @@ rec {
                   fuse
                 ];
 
-                postInstall = with pkgs; ''
-                  wrapProgram $out/bin/cloudflow --prefix PATH : ${lib.makeBinPath [sudo]}
-                '';
+                # postInstall = with pkgs; ''
+                #   wrapProgram $out/bin/cloudflow --prefix PATH : ${lib.makeBinPath [sudo]}
+                # '';
 
                 meta = with cargoTOML.package; {
                   inherit description homepage;
