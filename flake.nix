@@ -70,7 +70,7 @@ rec {
         overlays = [ (import rust-overlay) ];
       };
       inherit (nixpkgs) lib;
-      linuxSystems = (lib.debug.traceVal (builtins.filter
+      linuxSystems = (builtins.filter
         (platform: !(builtins.elem platform [
           "armv5tel-linux" # "error: missing bootstrap url for platform armv5te-unknown-linux-gnueabi"
           "mipsel-linux" # "error: attribute 'busybox' missing"
@@ -81,7 +81,7 @@ rec {
           "s390x-linux" # Ditto
           "s390-linux" # Ditto
         ]))
-        lib.platforms.linux));
+        lib.platforms.linux);
     in
     (lib.recursiveUpdate
       (flake-utils.lib.eachSystem linuxSystems (system:
