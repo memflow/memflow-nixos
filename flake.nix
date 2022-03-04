@@ -78,7 +78,7 @@ rec {
       };
       inherit (nixpkgs) lib;
       # List of Linux systems supported by memflow/Nix
-      linuxSystems = builtins.filter # Filter out broken systems that can't build all package derivations
+      linuxSystems = builtins.filter # Filter out broken Linux systems that can't build all package derivations
         (platform: !(builtins.elem platform [
           "armv5tel-linux" # "error: missing bootstrap url for platform armv5te-unknown-linux-gnueabi"
           "mipsel-linux" # "error: attribute 'busybox' missing"

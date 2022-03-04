@@ -10,6 +10,8 @@ pkgs.rustPlatform.buildRustPackage (rec {
 
   inherit src;
 
+  doCheck = false;
+
   cargoLock = {
     lockFile = "${src}/Cargo.lock";
   };
