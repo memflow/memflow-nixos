@@ -216,14 +216,15 @@ rec {
                 # commits include important fixes so we'll pin each package derivation to use a known working commit.
                 doCheck = false;
 
-                MEMFLOW_EXTRA_PLUGIN_PATHS = lib.concatStringsSep ";" (with self.packages.${system}; [
-                  "${memflow-win32}/lib/"
-                  (lib.optionalString (builtins.elem system linuxSystems) "${memflow-kvm}/lib/")
-                  "${memflow-qemu}/lib/"
-                  "${memflow-coredump}/lib/"
-                  "${memflow-native}/lib/"
-                  "${memflow-kcore}/lib/"
-                ]);
+                # Compile memflow with the lib/ path of each connector plugin
+                MEMFLOW_EXTRA_PLUGIN_PATHS =
+                  lib.concatStringsSep ";"
+                    (builtins.map
+                      (connector: "${connector}/lib/") # Turn each connector plugin package output into a lib/ path
+                      (builtins.attrValues
+                        (lib.attrsets.filterAttrs # Filter out package outputs that are not prefixed by "memflow-"
+                          (name: _: lib.strings.hasPrefix "memflow-" name)
+                          self.packages.${system})));
 
                 nativeBuildInputs = with pkgs; [
                   self.packages.${system}.cglue-bindgen
