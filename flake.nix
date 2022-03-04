@@ -38,6 +38,14 @@ rec {
       url = github:memflow/memflow-kcore;
       flake = false;
     };
+    memflow-microvmi = {
+      url = github:memflow/memflow-microvmi;
+      flake = false;
+    };
+    memflow-pcileech = {
+      url = github:memflow/memflow-pcileech;
+      flake = false;
+    };
 
     # Applications
 
@@ -50,7 +58,7 @@ rec {
       flake = false;
     };
     scanflow = {
-      url = github:memflow/scanflow;
+      url = github:memflow/scanflow?ref=pull/2/head;
       flake = false;
     };
     reflow = {

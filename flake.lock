@@ -128,6 +128,22 @@
         "url": "https://github.com/memflow/memflow-kvm.git"
       }
     },
+    "memflow-microvmi": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1606515465,
+        "narHash": "sha256-6UW9oN+PJ0fbGPJcP5UE8QXLReudTFoITtON5ATtT4s=",
+        "owner": "memflow",
+        "repo": "memflow-microvmi",
+        "rev": "11ad6ea4b6095a060cdbf256eb0dbe2a7e6df495",
+        "type": "github"
+      },
+      "original": {
+        "owner": "memflow",
+        "repo": "memflow-microvmi",
+        "type": "github"
+      }
+    },
     "memflow-native": {
       "flake": false,
       "locked": {
@@ -141,6 +157,22 @@
       "original": {
         "owner": "memflow",
         "repo": "memflow-native",
+        "type": "github"
+      }
+    },
+    "memflow-pcileech": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1644792795,
+        "narHash": "sha256-1U5HX1wybgZs4+tU+WX9Jq3RjT+DUqkTr7kEM52M9uk=",
+        "owner": "memflow",
+        "repo": "memflow-pcileech",
+        "rev": "4e51d1572bc13a906a6345e14437f1eb917579ad",
+        "type": "github"
+      },
+      "original": {
+        "owner": "memflow",
+        "repo": "memflow-pcileech",
         "type": "github"
       }
     },
@@ -232,7 +264,9 @@
         "memflow-coredump": "memflow-coredump",
         "memflow-kcore": "memflow-kcore",
         "memflow-kvm": "memflow-kvm",
+        "memflow-microvmi": "memflow-microvmi",
         "memflow-native": "memflow-native",
+        "memflow-pcileech": "memflow-pcileech",
         "memflow-qemu": "memflow-qemu",
         "memflow-win32": "memflow-win32",
         "nixpkgs": "nixpkgs",
