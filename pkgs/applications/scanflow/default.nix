@@ -21,5 +21,7 @@ pkgs.rustPlatform.buildRustPackage (rec {
     inherit description homepage;
     downloadPage = https://github.com/memflow/scanflow/releases;
     license = lib.licenses.mit;
+    mainProgram = "scanflow-cli";
+    broken = true;
   };
 })
