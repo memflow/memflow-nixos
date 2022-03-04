@@ -70,7 +70,8 @@ rec {
         overlays = [ (import rust-overlay) ];
       };
       inherit (nixpkgs) lib;
-      linuxSystems = (builtins.filter
+      # List of Linux systems supported by memflow/Nix
+      linuxSystems = builtins.filter # Filter out broken systems that can't build all package derivations
         (platform: !(builtins.elem platform [
           "armv5tel-linux" # "error: missing bootstrap url for platform armv5te-unknown-linux-gnueabi"
           "mipsel-linux" # "error: attribute 'busybox' missing"
@@ -81,9 +82,12 @@ rec {
           "s390x-linux" # Ditto
           "s390-linux" # Ditto
         ]))
-        lib.platforms.linux);
+        lib.platforms.linux;
+
+      commonPkgInputs = { inherit inputs projectVersion lib; };
     in
     (lib.recursiveUpdate
+      # Package outputs specific to Linux (KVM connector & kernel module)
       (flake-utils.lib.eachSystem linuxSystems (system:
         let
           pkgs = pkgsForSystem system;
@@ -91,46 +95,7 @@ rec {
         in
         {
           packages = {
-
-            memflow-kvm =
-              let
-                src = inputs.memflow-kvm;
-                cargoTOML = (builtins.fromTOML (builtins.readFile (src + "/memflow-kvm/Cargo.toml")));
-              in
-              pkgs.rustPlatform.buildRustPackage (rec {
-                pname = cargoTOML.package.name;
-                version = projectVersion cargoTOML src;
-
-                inherit src;
-
-                RUST_BACKTRACE = "full";
-                # memflow-kvm-ioctl has a custom build command that requires libclang to be found at the path specified by
-                # the "LIBCLANG_PATH" environment variable: "thread 'main' panicked at 'Unable to find libclang" ...
-                # "set the `LIBCLANG_PATH` environment variable to a path where one of these files can be found"
-                LIBCLANG_PATH = "${pkgs.libclang.lib}/lib/";
-                # Workarounds for bindgen being unable to find Linux & libc development headers
-                # See: https://github.com/search?p=1&q=language%3Anix+BINDGEN_EXTRA_CLANG_ARGS&type=Code
-                BINDGEN_EXTRA_CLANG_ARGS = lib.concatStringsSep " " [
-                  "-I${pkgs.linuxHeaders}/include" # "fatal error: 'linux/types.h' file not found"
-                  # "wrapper.h:2:10: fatal error: 'stddef.h' file not found"
-                  "-isystem ${pkgs.llvmPackages.libclang.lib}/lib/clang/${lib.getVersion pkgs.clang}/include"
-                  # "-isystem ${pkgs.llvmPackages.clang}/resource-root/include" # Also works
-                ];
-
-                cargoLock = {
-                  lockFile = "${src}/Cargo.lock";
-                };
-                # Compile the KVM connector in the same way memflowup does to ensure it contains necessary exports
-                cargoBuildFlags = [ "--workspace" "--all-features" ];
-
-                meta = with cargoTOML.package; with lib; {
-                  inherit description homepage;
-                  downloadPage = https://github.com/memflow/memflow-kvm/releases;
-                  license = licenses.mit;
-                  platforms = platforms.linux;
-                };
-              });
-
+            memflow-kvm = import ./pkgs/connectors/kvm (commonPkgInputs // { inherit pkgs; });
           };
 
           memflow-kmod = with pkgs;
@@ -158,7 +123,6 @@ rec {
                 platforms = platforms.linux;
               };
             };
-
         }
       ))
       (flake-utils.lib.eachDefaultSystem (system:
@@ -168,180 +132,22 @@ rec {
         in
         {
           packages = {
-            cglue-bindgen =
-              let
-                src = inputs.cglue-bindgen;
-                cargoTOML = (builtins.fromTOML (builtins.readFile (src + "/cglue-bindgen/Cargo.toml")));
-              in
-              pkgs.rustPlatform.buildRustPackage rec {
-                pname = cargoTOML.package.name;
-                version = projectVersion cargoTOML src;
+            # Memflow development package
+            memflow = import ./pkgs/development/memflow (commonPkgInputs // { inherit self pkgs system description; });
 
-                inherit src;
+            # Connector Plugins
 
-                cargoLock = {
-                  lockFile = "${src}/Cargo.lock";
-                };
+            memflow-win32 = import ./pkgs/connectors/win32 (commonPkgInputs // { inherit pkgs; });
+            memflow-qemu = import ./pkgs/connectors/qemu (commonPkgInputs // { inherit pkgs; });
+            memflow-coredump = import ./pkgs/connectors/coredump (commonPkgInputs // { inherit pkgs; });
+            memflow-native = import ./pkgs/connectors/native (commonPkgInputs // { inherit pkgs; });
+            memflow-kcore = import ./pkgs/connectors/kcore (commonPkgInputs // { inherit pkgs; });
 
-                nativeBuildInputs = with pkgs; [ makeWrapper ];
+            # Application Packages
 
-                # cbindgen 0.20 (see: https://git.io/J9Gk2) & Rust nightly are needed for cglue-bindgen:
-                # "ERROR: Parsing crate `memflow-ffi`: couldn't run `cargo rustc -Zunpretty=expanded`"
-                # "error: the option `Z` is only accepted on the nightly compiler"
-                postInstall = ''
-                  wrapProgram $out/bin/cglue-bindgen \
-                    --prefix PATH : ${lib.makeBinPath (with pkgs; [rust-cbindgen rust-bin.nightly.latest.default ])}
-                '';
-
-                meta = with cargoTOML.package; {
-                  inherit description;
-                  homepage = repository;
-                  downloadPage = https://github.com/h33p/cglue/releases;
-                  license = lib.licenses.mit;
-                };
-              };
-
-            memflow =
-              let
-                src = inputs.memflow;
-                cargoTOML = (builtins.fromTOML (builtins.readFile (src + "/memflow/Cargo.toml")));
-              in
-              pkgs.rustPlatform.buildRustPackage rec {
-                pname = cargoTOML.package.name;
-                version = projectVersion cargoTOML src;
-
-                inherit src;
-
-                # Test suites are often failing for next branch commits since it's bleeding edge. Sometimes non-passing
-                # commits include important fixes so we'll pin each package derivation to use a known working commit.
-                doCheck = false;
-
-                # Compile memflow with the lib/ path of each connector plugin
-                MEMFLOW_EXTRA_PLUGIN_PATHS =
-                  lib.concatStringsSep ";"
-                    (builtins.map
-                      (connector: "${connector}/lib/") # Turn each connector plugin package output into a lib/ path
-                      (builtins.attrValues
-                        (lib.attrsets.filterAttrs # Filter out package outputs that are not prefixed by "memflow-"
-                          (name: _: lib.strings.hasPrefix "memflow-" name)
-                          self.packages.${system})));
-
-                nativeBuildInputs = with pkgs; [
-                  self.packages.${system}.cglue-bindgen
-                ];
-
-                cargoLock = {
-                  lockFile = "${src}/Cargo.lock";
-                  outputHashes = {
-                    "criterion-0.3.2" = "sha256-pCb+2DJEeNsHQ/gDUPyCSo0kvFpHW6Uwoz1JePyj68s=";
-                  };
-                };
-                cargoBuildFlags = [ "--workspace" "--all-features" ];
-
-                outputs = [ "out" "dev" ]; # Create outputs for the FFI shared library & development headers
-
-                postBuild = ''
-                  mkdir -vp $dev/include/
-                  cglue-bindgen -c memflow-ffi/cglue.toml -- --config memflow-ffi/cbindgen.toml --crate memflow-ffi \
-                    -l C --output /dev/null || true
-                  cglue-bindgen -c memflow-ffi/cglue.toml -- --config memflow-ffi/cbindgen.toml --crate memflow-ffi \
-                    -l C --output $dev/include/memflow.h
-                  cglue-bindgen -c memflow-ffi/cglue.toml -- --config memflow-ffi/cbindgen.toml --crate memflow-ffi \
-                    -l C++ --output /dev/null || true
-                  cglue-bindgen -c memflow-ffi/cglue.toml -- --config memflow-ffi/cbindgen.toml --crate memflow-ffi \
-                    -l C++ --output $dev/include/memflow_cpp.h
-                '';
-
-                postInstall = ''
-                  mkdir -vp "$dev/lib/pkgconfig/"
-                  cat << EOF > $dev/lib/pkgconfig/memflow-ffi.pc
-                  libdir=$out/lib
-                  includedir=$dev/include
-
-                  Name: memflow-ffi
-                  Description: C bindings for ${description}
-                  Version: ${version}
-
-                  Requires:
-                  Cflags: -I\''${includedir}
-                  Libs: -L\''${libdir} -lmemflow_ffi
-                  EOF
-                '';
-
-                meta = with cargoTOML.package; {
-                  inherit description homepage;
-                  downloadPage = https://github.com/memflow/memflow/releases;
-                  license = lib.licenses.mit;
-                };
-              };
-
-            memflow-win32 = import ./pkgs/connectors/win32 { inherit inputs projectVersion pkgs lib; };
-            memflow-qemu = import ./pkgs/connectors/qemu { inherit inputs projectVersion pkgs lib; };
-            memflow-coredump = import ./pkgs/connectors/coredump { inherit inputs projectVersion pkgs lib; };
-            memflow-native = import ./pkgs/connectors/native { inherit inputs projectVersion pkgs lib; };
-            memflow-kcore = import ./pkgs/connectors/kcore { inherit inputs projectVersion pkgs lib; };
-
-            cloudflow =
-              let
-                src = inputs.cloudflow;
-                cargoTOML = (builtins.fromTOML (builtins.readFile (src + "/cloudflow/Cargo.toml")));
-              in
-              pkgs.rustPlatform.buildRustPackage (rec {
-                pname = cargoTOML.package.name;
-                version = projectVersion cargoTOML src;
-
-                inherit src;
-
-                cargoLock = {
-                  lockFile = "${src}/Cargo.lock";
-                  outputHashes = {
-                    "minidump-writer-0.1.0" = "sha256-tlwVlYQyAl5w7ObZLSzVBEqgiwFUUaioJOvbGCC6Jd4=";
-                  };
-                };
-                cargoBuildFlags = [ "--workspace" "--all-features" ];
-
-                nativeBuildInputs = with pkgs; [
-                  pkg-config
-                  makeWrapper
-                ];
-                buildInputs = with pkgs; [
-                  fuse
-                ];
-
-                postInstall = lib.optionalString (builtins.elem system linuxSystems) (with pkgs; ''
-                  wrapProgram $out/bin/cloudflow --prefix PATH : ${lib.makeBinPath [sudo]}
-                '');
-
-                meta = with cargoTOML.package; {
-                  inherit description homepage;
-                  downloadPage = https://github.com/memflow/cloudflow/releases;
-                  license = lib.licenses.mit;
-                };
-              });
-
-            scanflow =
-              let
-                src = inputs.scanflow;
-                cargoTOML = (builtins.fromTOML (builtins.readFile (src + "/scanflow/Cargo.toml")));
-              in
-              pkgs.rustPlatform.buildRustPackage (rec {
-                pname = cargoTOML.package.name;
-                version = projectVersion cargoTOML src;
-
-                inherit src;
-
-                cargoLock = {
-                  lockFile = "${src}/Cargo.lock";
-                };
-                cargoBuildFlags = [ "--all-features" ];
-
-                meta = with cargoTOML.package; {
-                  inherit description homepage;
-                  downloadPage = https://github.com/memflow/scanflow/releases;
-                  license = lib.licenses.mit;
-                };
-              });
-
+            cglue-bindgen = import ./pkgs/applications/cglue-bindgen (commonPkgInputs // { inherit pkgs; });
+            cloudflow = import ./pkgs/applications/cloudflow (commonPkgInputs // { inherit system linuxSystems pkgs; });
+            scanflow = import ./pkgs/applications/scanflow (commonPkgInputs // { inherit pkgs; });
           };
         }
       ))) // {
