@@ -19,15 +19,15 @@
     "cloudflow": {
       "flake": false,
       "locked": {
-        "lastModified": 1645908412,
+        "lastModified": 1646391277,
         "narHash": "sha256-SiIrYBi3up7PXQBPnmscQcI5saRUC6SEBqTBJCIq9rQ=",
-        "owner": "weewoo22",
+        "owner": "memflow",
         "repo": "cloudflow",
-        "rev": "6c9194c3f87e61984e2a1f20453df7a615d0eda0",
+        "rev": "42d1afcb177eee5ebd95bc50c9cc433b6b92498e",
         "type": "github"
       },
       "original": {
-        "owner": "weewoo22",
+        "owner": "memflow",
         "repo": "cloudflow",
         "type": "github"
       }
@@ -80,15 +80,15 @@
     "memflow-coredump": {
       "flake": false,
       "locked": {
-        "lastModified": 1645908889,
+        "lastModified": 1646391405,
         "narHash": "sha256-Ul8yZXcDloshkZKGLwv3Aicvc29pLvwk24q4aq8czcc=",
-        "owner": "weewoo22",
+        "owner": "memflow",
         "repo": "memflow-coredump",
-        "rev": "27241f7535906140477340ef71f6e66a3bf2ea90",
+        "rev": "df5b7fa9a25239a191edf67e036c3d4f539ac2dd",
         "type": "github"
       },
       "original": {
-        "owner": "weewoo22",
+        "owner": "memflow",
         "repo": "memflow-coredump",
         "type": "github"
       }
@@ -163,11 +163,11 @@
     "memflow-win32": {
       "flake": false,
       "locked": {
-        "lastModified": 1645742620,
-        "narHash": "sha256-wHM99jP+S5CfWrucQekuSI+/DnxWL8WSioR7PXSVbAQ=",
+        "lastModified": 1646391187,
+        "narHash": "sha256-6hBSTtXrisinT+sbmnDpKnbmInT0Bk1H8TCG3zHhPyg=",
         "owner": "memflow",
         "repo": "memflow-win32",
-        "rev": "9872465e3df223b565af7fd105ff7f095c504e80",
+        "rev": "65b51b93ce8def27fce2b00588ced5506a85ed47",
         "type": "github"
       },
       "original": {
@@ -178,11 +178,11 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1646091577,
-        "narHash": "sha256-o3R0i84B6LmZtbo3k2T4lwuPIVB2ZjTw+MqV2r2dnAU=",
+        "lastModified": 1646331602,
+        "narHash": "sha256-cRuytTfel52z947yKfJcZU7zbQBgM16qqTf+oJkVwtg=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "6cb23bdec767caa938c3c17bfd2a1dbddce4427f",
+        "rev": "ad267cc9cf3d5a6ae63940df31eb31382d6356e6",
         "type": "github"
       },
       "original": {
@@ -246,11 +246,11 @@
         "nixpkgs": "nixpkgs_2"
       },
       "locked": {
-        "lastModified": 1646187864,
-        "narHash": "sha256-mGO/X5IHUNdh50aw/2zuPDiXEFbf+HHryK8bIODPpyo=",
+        "lastModified": 1646360880,
+        "narHash": "sha256-Xu/gQO2eqRBOOarjl7XuPdrtKagAGAZDn6AlIRzGUns=",
         "owner": "oxalica",
         "repo": "rust-overlay",
-        "rev": "90a7228c33be0ef7f8a10fafa83ced9aaa09afa4",
+        "rev": "194016e6b086bfa5965aeb8979c58b93e03e2485",
         "type": "github"
       },
       "original": {

@@ -32,7 +32,7 @@ rec {
       flake = false;
     };
     memflow-coredump = {
-      url = github:weewoo22/memflow-coredump;
+      url = github:memflow/memflow-coredump;
       flake = false;
     };
     memflow-native = {
@@ -47,7 +47,7 @@ rec {
     # Applications
 
     cloudflow = {
-      url = github:weewoo22/cloudflow;
+      url = github:memflow/cloudflow;
       flake = false;
     };
     scanflow = {
