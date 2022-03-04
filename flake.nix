@@ -116,9 +116,9 @@ rec {
               kernel = kernel.dev;
               nativeBuildInputs = kernel.moduleBuildDependencies;
 
-              meta = {
+              meta = with lib; {
                 # See: https://github.com/memflow/memflow-kvm#licensing-note
-                license = lib.licenses.gpl2Only;
+                license = licenses.gpl2Only;
                 platforms = platforms.linux;
               };
             };
