@@ -4,11 +4,6 @@ rec {
   inputs = {
     rust-overlay.url = github:oxalica/rust-overlay;
 
-    cglue-bindgen = {
-      url = github:h33p/cglue;
-      flake = false;
-    };
-
     memflow = {
       url = github:memflow/memflow;
       flake = false;
@@ -46,6 +41,10 @@ rec {
 
     # Applications
 
+    cglue-bindgen = {
+      url = github:h33p/cglue;
+      flake = false;
+    };
     cloudflow = {
       url = github:memflow/cloudflow;
       flake = false;
@@ -55,7 +54,7 @@ rec {
       flake = false;
     };
     reflow = {
-      url = github:memflow/reflow;
+      url = github:memflow/reflow?ref=pull/10/head;
       flake = false;
     };
   };
@@ -148,6 +147,7 @@ rec {
             cglue-bindgen = import ./pkgs/applications/cglue-bindgen (commonPkgInputs // { inherit pkgs; });
             cloudflow = import ./pkgs/applications/cloudflow (commonPkgInputs // { inherit system linuxSystems pkgs; });
             scanflow = import ./pkgs/applications/scanflow (commonPkgInputs // { inherit pkgs; });
+            reflow = import ./pkgs/applications/reflow (commonPkgInputs // { inherit pkgs; });
           };
         }
       ))) // {
