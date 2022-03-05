@@ -1,4 +1,4 @@
-{ inputs, pkgs, lib, projectVersion, system, linuxSystems }:
+{ inputs, pkgs, lib, projectVersion, system, linuxSystems, description }:
 
 let
   src = inputs.cloudflow;
