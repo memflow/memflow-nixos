@@ -16,7 +16,7 @@ pkgs.rustPlatform.buildRustPackage rec {
 
   # Compile memflow with the lib/ path of each connector plugin
   MEMFLOW_EXTRA_PLUGIN_PATHS =
-    lib.concatStringsSep ";"
+    lib.concatStringsSep ":"
       (builtins.map
         (connector: "${connector}/lib/") # Turn each connector plugin package output into a lib/ path
         (builtins.attrValues
