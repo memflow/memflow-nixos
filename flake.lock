@@ -241,16 +241,15 @@
     "reflow": {
       "flake": false,
       "locked": {
-        "lastModified": 1646433460,
-        "narHash": "sha256-XnOPjWBcz5LM9u/+4mxGqgD5v0UL8MArMyI3/StQS8c=",
+        "lastModified": 1646489083,
+        "narHash": "sha256-LIH+LKiObfdp77deeialEGUJSQgxf9TTdzDc4QvAk+Q=",
         "owner": "memflow",
         "repo": "reflow",
-        "rev": "287a5c0434b85d15650a667cd5d445077288fac5",
+        "rev": "d741faa74776fc100bc03a358a2e3024fa9898a6",
         "type": "github"
       },
       "original": {
         "owner": "memflow",
-        "ref": "pull/10/head",
         "repo": "reflow",
         "type": "github"
       }

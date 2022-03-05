@@ -3,12 +3,12 @@ on:
   pull_request:
   push:
 jobs:
-  tests:
+  build-and-cache:
     runs-on: ubuntu-latest
+    env:
+      NIXPKGS_ALLOW_BROKEN: 1
     steps:
       - uses: actions/checkout@v3
       - uses: cachix/install-nix-action@v15
       - run: nix --impure flake check
-        env:
-          NIXPKGS_ALLOW_BROKEN: 1
-      - run: nix build .#memflow .#cloudflow
+      - run: nix --impure build .#memflow .#cloudflow .#reflow .#cloudflow

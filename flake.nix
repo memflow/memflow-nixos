@@ -62,7 +62,7 @@ rec {
       flake = false;
     };
     reflow = {
-      url = github:memflow/reflow?ref=pull/10/head;
+      url = github:memflow/reflow;
       flake = false;
     };
   };
