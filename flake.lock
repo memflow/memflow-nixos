@@ -297,16 +297,15 @@
     "scanflow": {
       "flake": false,
       "locked": {
-        "lastModified": 1646435854,
+        "lastModified": 1646441197,
         "narHash": "sha256-14AeuHYWejLyJMDy++CaNtAEfPhw0QUycLrArHdDOX0=",
         "owner": "memflow",
         "repo": "scanflow",
-        "rev": "14905aed538044ba67d87b81a48552b819a74989",
+        "rev": "d82e220c2454b5dfc3022837f6243e603a25e0fe",
         "type": "github"
       },
       "original": {
         "owner": "memflow",
-        "ref": "pull/2/head",
         "repo": "scanflow",
         "type": "github"
       }

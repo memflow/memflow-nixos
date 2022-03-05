@@ -58,7 +58,7 @@ rec {
       flake = false;
     };
     scanflow = {
-      url = github:memflow/scanflow?ref=pull/2/head;
+      url = github:memflow/scanflow;
       flake = false;
     };
     reflow = {
