@@ -43,7 +43,10 @@ rec {
       flake = false;
     };
     memflow-pcileech = {
-      url = github:memflow/memflow-pcileech;
+      url = https://github.com/memflow/memflow-pcileech.git;
+      type = "git";
+      ref = "main";
+      submodules = true;
       flake = false;
     };
 
@@ -149,6 +152,7 @@ rec {
             memflow-coredump = import ./pkgs/connectors/coredump (commonPkgInputs // { inherit pkgs; });
             memflow-native = import ./pkgs/connectors/native (commonPkgInputs // { inherit pkgs; });
             memflow-kcore = import ./pkgs/connectors/kcore (commonPkgInputs // { inherit pkgs; });
+            memflow-pcileech = import ./pkgs/connectors/pcileech (commonPkgInputs // { inherit pkgs; });
 
             # Application Packages
 

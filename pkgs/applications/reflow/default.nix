@@ -10,12 +10,7 @@ pkgs.rustPlatform.buildRustPackage (rec {
 
   inherit src;
 
-  cargoLock = {
-    lockFile = "${src}/Cargo.lock";
-    outputHashes = {
-      "unicorn-engine-2.0.0-rc6" = "sha256-mbEu81okyTYdBzieC3thyE0fqfjxgpmBPOkOvE5ODFE=";
-    };
-  };
+  cargoHash = "sha256-J0AvUC0kvRJ9LLG+p5r5D/OVLoJwl0xI3rT2N36o7iQ=";
   cargoBuildFlags = [ "--all-features" ];
 
   nativeBuildInputs = with pkgs; [
@@ -23,12 +18,12 @@ pkgs.rustPlatform.buildRustPackage (rec {
   ];
   buildInputs = with pkgs; [
     unicorn
+    openssl
   ];
 
   meta = with cargoTOML.package;{
     inherit description homepage;
     downloadPage = https://github.com/memflow/reflow/releases;
     license = lib.licenses.mit;
-    broken = true;
   };
 })
