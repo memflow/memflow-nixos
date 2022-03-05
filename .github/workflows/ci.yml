@@ -11,4 +11,4 @@ jobs:
       - uses: actions/checkout@v3
       - uses: cachix/install-nix-action@v16
       - run: nix --impure flake check
-      - run: nix --impure build .#memflow .#cloudflow .#reflow .#cloudflow
+      - run: nix --impure build .#memflow .#cloudflow .#scanflow .#reflow
