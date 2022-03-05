@@ -13,7 +13,7 @@ pkgs.rustPlatform.buildRustPackage (rec {
   cargoLock = {
     lockFile = "${src}/Cargo.lock";
     outputHashes = {
-      "memflow-0.1.5" = "sha256-JT1Igi7IwrtKstkDfeXT3rqVIsLBpPaW1TBzKRl5Yho=";
+      "unicorn-engine-2.0.0-rc6" = "sha256-mbEu81okyTYdBzieC3thyE0fqfjxgpmBPOkOvE5ODFE=";
     };
   };
   cargoBuildFlags = [ "--all-features" ];
