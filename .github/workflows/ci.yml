@@ -10,5 +10,5 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: cachix/install-nix-action@v16
-      - run: nix --impure flake check
-      - run: nix --impure build .#memflow .#cloudflow .#scanflow .#reflow
+      - run: nix flake check --impure
+      - run: nix build --impure .#memflow .#cloudflow .#scanflow .#reflow
