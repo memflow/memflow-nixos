@@ -11,7 +11,6 @@ pkgs.rustPlatform.buildRustPackage (rec {
   inherit src;
 
   cargoHash = "sha256-J0AvUC0kvRJ9LLG+p5r5D/OVLoJwl0xI3rT2N36o7iQ=";
-  cargoBuildFlags = [ "--all-features" ];
 
   nativeBuildInputs = with pkgs; [
     pkg-config
@@ -20,6 +19,10 @@ pkgs.rustPlatform.buildRustPackage (rec {
     unicorn
     openssl
   ];
+
+  buildFeatures = [ "unicorn-engine/use_system_unicorn" ];
+
+  doCheck = false;
 
   meta = with cargoTOML.package;{
     inherit description homepage;
