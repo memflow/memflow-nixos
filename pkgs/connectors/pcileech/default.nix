@@ -16,6 +16,12 @@ pkgs.rustPlatform.buildRustPackage (rec {
   cargoBuildFlags = [ "--all-features" ];
 
   LIBCLANG_PATH = "${pkgs.libclang.lib}/lib/";
+  BINDGEN_EXTRA_CLANG_ARGS = lib.concatStringsSep " " [
+    # "fatal error: 'inttypes.h' file not found"
+    # "-isystem ${pkgs.llvmPackages.libclang.lib}/lib/clang/${lib.getVersion pkgs.clang}/include"
+    # "-I${pkgs.linuxHeaders}/include"
+    "-I${pkgs.clang}/resource-root/include"
+  ];
 
   nativeBuildInputs = with pkgs; [
     pkg-config
