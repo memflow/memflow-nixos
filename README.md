@@ -53,10 +53,6 @@ To install the kernel module for the KVM connector plugin on your system simply 
 # configuration.nix
 { ... }:
 {
-  memflow = {
-    kvm = {
-      enable = true;
-    };
-  };
+  memflow.kvm.enable = true;
 }
 ```
