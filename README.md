@@ -4,7 +4,7 @@
 
 ### FFI Project
 
-To create an FFI project include the `memflow` output from this Flake in your development environment shell. All connector plugins are available by default.
+To create a FFI project include the `memflow` output from this Flake in your development shell. All connector plugins are available by default.
 
 ```nix
 {
