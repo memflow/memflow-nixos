@@ -9,6 +9,8 @@ To create a FFI project include the `memflow` output from this Flake in your dev
 ```nix
 {
   inputs = {
+    nixpkgs.url = github:nixos/nixpkgs/nixos-unstable;
+    flake-utils.url = github:numtide/flake-utils;
     memflow.url = github:memflow/memflow-nixos;
   };
 
