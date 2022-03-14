@@ -77,7 +77,21 @@ rec {
       projectVersion = cargoTOML: src: "${cargoTOML.package.version}+${builtins.substring 0 7 src.rev}";
       pkgsForSystem = system: import nixpkgs {
         inherit system;
-        overlays = [ (import rust-overlay) ];
+        overlays = [
+          (import rust-overlay)
+          # Pin default pkgs.rustPlatform to latest stable rust toolchain version
+          (self: super: {
+            rustPlatform = self.makeRustPlatform (
+              let
+                rustToolchain = self.rust-bin.stable.latest.default;
+              in
+              {
+                cargo = rustToolchain;
+                rustc = rustToolchain;
+              }
+            );
+          })
+        ];
       };
       inherit (nixpkgs) lib;
       # List of Linux systems supported by memflow/Nix
