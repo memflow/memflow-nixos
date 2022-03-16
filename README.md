@@ -21,7 +21,7 @@ To create a FFI project include the `memflow` output from this Flake in your dev
       in
       {
         devShell = pkgs.mkShell {
-          buildInputs = with pkgs; with inputs.memflow; [
+          buildInputs = with pkgs; with inputs.memflow.packages.${system}; [
             memflow # Memflow FFI
           ];
         };
