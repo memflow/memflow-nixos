@@ -72,6 +72,11 @@ rec {
     };
   };
 
+  nixConfig = {
+    extra-substituters = [ https://memflow.cachix.org ];
+    extra-trusted-public-keys = [ memflow.cachix.org-1:t4ufU/+o8xtYpZQc9/AyzII/sohwMKGYNIMgT56CgXA= ];
+  };
+
   outputs = { self, nixpkgs, flake-utils, rust-overlay, ... } @ inputs:
     let
       # Function that creates the package derivation version string from the Cargo TOML version & git rev hash.
