@@ -1,7 +1,8 @@
 name: "Build & Cache"
+
 on:
-  pull_request:
   push:
+
 jobs:
   build-and-cache:
     runs-on: ubuntu-latest
@@ -10,5 +11,9 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: cachix/install-nix-action@v16
+      - uses: cachix/cachix-action@v10
+        with:
+          name: memflow
+          authToken: "${{ secrets.CACHIX_AUTH_TOKEN }}"
       - run: nix flake check --impure
       - run: nix build .#memflow .#cloudflow .#reflow
