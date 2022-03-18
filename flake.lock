@@ -65,11 +65,11 @@
     "memflow": {
       "flake": false,
       "locked": {
-        "lastModified": 1647628679,
-        "narHash": "sha256-drbBOhS6Dy+T3bFF0m4ZIlf9EIxfxwqUYA+dKlMGxec=",
+        "lastModified": 1647642734,
+        "narHash": "sha256-a9A/8OZeLjppYsrHQufwtdTZJ75NwXtZzf66f16hGBQ=",
         "owner": "memflow",
         "repo": "memflow",
-        "rev": "4edd4e13dc6309165596d481d7c89989b1758b9d",
+        "rev": "14d1dd0dab6fbab4de28b5ec2b64a718bf6f2d38",
         "type": "github"
       },
       "original": {
