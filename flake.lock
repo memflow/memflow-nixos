@@ -65,11 +65,11 @@
     "memflow": {
       "flake": false,
       "locked": {
-        "lastModified": 1647642734,
-        "narHash": "sha256-a9A/8OZeLjppYsrHQufwtdTZJ75NwXtZzf66f16hGBQ=",
+        "lastModified": 1647692725,
+        "narHash": "sha256-KE1q6IfEgRyVDb+TdDjfhOkvbUJhodBt4ZscOnlWowY=",
         "owner": "memflow",
         "repo": "memflow",
-        "rev": "14d1dd0dab6fbab4de28b5ec2b64a718bf6f2d38",
+        "rev": "731f07f4b7c574f237cbccb528f2b8c95836706f",
         "type": "github"
       },
       "original": {
@@ -164,11 +164,11 @@
     "memflow-pcileech": {
       "flake": false,
       "locked": {
-        "lastModified": 1644792795,
-        "narHash": "sha256-Y5CJ188eaeJ5z5HzccAOBksdAqFK4T698iDy3H52cdE=",
+        "lastModified": 1647726316,
+        "narHash": "sha256-wtjsxTe2pspJzBn7H7GTp2kJd8h9gNCfcSl1AijIYh4=",
         "ref": "main",
-        "rev": "4e51d1572bc13a906a6345e14437f1eb917579ad",
-        "revCount": 89,
+        "rev": "77634eea38087e99c8c57d7ba72f1a43bc3f0934",
+        "revCount": 91,
         "submodules": true,
         "type": "git",
         "url": "https://github.com/memflow/memflow-pcileech.git"
@@ -286,11 +286,11 @@
         "nixpkgs": "nixpkgs_2"
       },
       "locked": {
-        "lastModified": 1647570584,
-        "narHash": "sha256-wQ/xUt2yU+ncx0JQMMQDcFoWLY2xo0Vo5CxIGuxMdmY=",
+        "lastModified": 1647656634,
+        "narHash": "sha256-f3VQSat3L2ObJm7DDr72HFCa9e7WAjKPqW70o2Bb7pg=",
         "owner": "oxalica",
         "repo": "rust-overlay",
-        "rev": "00ac40d23ec331be4fd143b8cd3e9142e3bcbe9b",
+        "rev": "a21c163919cd90dd67bcd03345fac5441e53cccc",
         "type": "github"
       },
       "original": {
