@@ -3,11 +3,11 @@
     "cglue-bindgen": {
       "flake": false,
       "locked": {
-        "lastModified": 1645355609,
-        "narHash": "sha256-h86oUZT2A8UDCxA2mRjBTSDHUvKhv+LOUn2OIhuX+1E=",
+        "lastModified": 1647799225,
+        "narHash": "sha256-DprIuK75ldeU1JHOi25GFXV167OmAoGDaJ1JPxZR9ig=",
         "owner": "h33p",
         "repo": "cglue",
-        "rev": "e6761fce0b596ef16494194be40316135568cf21",
+        "rev": "4a942c55a6dd215045132b51d63b47b32560b0cc",
         "type": "github"
       },
       "original": {
@@ -65,11 +65,11 @@
     "memflow": {
       "flake": false,
       "locked": {
-        "lastModified": 1647692725,
-        "narHash": "sha256-KE1q6IfEgRyVDb+TdDjfhOkvbUJhodBt4ZscOnlWowY=",
+        "lastModified": 1647804031,
+        "narHash": "sha256-f96WO+BC4e72nejdIpHbhELicV4b2I2OabuFcvxpuGE=",
         "owner": "memflow",
         "repo": "memflow",
-        "rev": "731f07f4b7c574f237cbccb528f2b8c95836706f",
+        "rev": "c88656b5037bfb4ebb087e80b159221e4ade861a",
         "type": "github"
       },
       "original": {
@@ -81,11 +81,11 @@
     "memflow-coredump": {
       "flake": false,
       "locked": {
-        "lastModified": 1647627212,
-        "narHash": "sha256-JoWyQh78WawsD+rsL7XugyITrX06tJYWUbMIyY2HJRc=",
+        "lastModified": 1647802933,
+        "narHash": "sha256-ta4P5eovDsiSQ301LtVrI14bkN47UmeyunCBijCOV54=",
         "owner": "memflow",
         "repo": "memflow-coredump",
-        "rev": "4ff141c0bd97aec1802e0435c8a04897acc075a7",
+        "rev": "e52988d112c3bed3e450f83451fa700b60388673",
         "type": "github"
       },
       "original": {
@@ -97,11 +97,11 @@
     "memflow-kcore": {
       "flake": false,
       "locked": {
-        "lastModified": 1647627990,
-        "narHash": "sha256-AznWRzmnjmy/2O4IzGUvccG4KsIUvdhVZ39VTv6WtlE=",
+        "lastModified": 1647803123,
+        "narHash": "sha256-gwRCXjZm7EUJtdLnzB3wYeZFNqdaX6SUY9fdPES9Zo0=",
         "owner": "memflow",
         "repo": "memflow-kcore",
-        "rev": "396022a30049d8e8b395587e2f21e443b5e976f3",
+        "rev": "15fe4dcb2b70affe5a6d24f538cbd4d8beb6299b",
         "type": "github"
       },
       "original": {
@@ -113,11 +113,11 @@
     "memflow-kvm": {
       "flake": false,
       "locked": {
-        "lastModified": 1647627080,
-        "narHash": "sha256-TGKRZcjRBL9TWaj0SV3Be/zFjucuCz12/aOrxT2UlvA=",
+        "lastModified": 1647802996,
+        "narHash": "sha256-WHkNW2L7fBx0jmjHGv3H/1qXbzKHCNiFkejE0xCAx+s=",
         "ref": "main",
-        "rev": "cfb2aa3e34cf927ab4f0ae7ddff0bc011494707a",
-        "revCount": 84,
+        "rev": "98439ba6e6e1e6ffd5cd2074bea92496ebf01835",
+        "revCount": 85,
         "submodules": true,
         "type": "git",
         "url": "https://github.com/memflow/memflow-kvm.git"
@@ -148,11 +148,11 @@
     "memflow-native": {
       "flake": false,
       "locked": {
-        "lastModified": 1647626733,
-        "narHash": "sha256-jGpwq1eeXbcFFHI/kADaC9PX1AEgRa8OZ8Lr6POmiUU=",
+        "lastModified": 1647802846,
+        "narHash": "sha256-9VTvU3107o7fbY6g+fQFtYauS4Y3QpzH3B6yGYW6Qo4=",
         "owner": "memflow",
         "repo": "memflow-native",
-        "rev": "8898ee45b81d10f936f560555eff1f73999b9a23",
+        "rev": "a9410c0873fff96e824a901116cd344817a5b82e",
         "type": "github"
       },
       "original": {
@@ -164,11 +164,11 @@
     "memflow-pcileech": {
       "flake": false,
       "locked": {
-        "lastModified": 1647784693,
-        "narHash": "sha256-AaMwNnmVQpOMOt2B7wc1E+8RdY/xsPKkvByMnjlbd5I=",
+        "lastModified": 1647804687,
+        "narHash": "sha256-dvJLl4O5VWDzYX+P1dEGs20Qv0BqDQdtb4wFqtq2BMI=",
         "ref": "main",
-        "rev": "d19e1db8c0fae2eaee76c0647c34f1b87af95572",
-        "revCount": 94,
+        "rev": "9e35ddf1354f87d598e80aa92a4c1f91e4ebe28a",
+        "revCount": 97,
         "submodules": true,
         "type": "git",
         "url": "https://github.com/memflow/memflow-pcileech.git"
@@ -183,11 +183,11 @@
     "memflow-qemu": {
       "flake": false,
       "locked": {
-        "lastModified": 1647626879,
-        "narHash": "sha256-ywf876FJx1eAduOocZwy3YOU9e6CRU0PsyNVMbMluhc=",
+        "lastModified": 1647802968,
+        "narHash": "sha256-JqUchK6ym1equaB8cnme2mM3xEdklIFcJXz2t4qqMiU=",
         "owner": "memflow",
         "repo": "memflow-qemu",
-        "rev": "84d450279f54585df2a0fa92e5745fc0b7439b1a",
+        "rev": "a81c4a1168663b3c2bbfc3ff7fc788a1421585ce",
         "type": "github"
       },
       "original": {
@@ -199,11 +199,11 @@
     "memflow-win32": {
       "flake": false,
       "locked": {
-        "lastModified": 1647627323,
-        "narHash": "sha256-zTbqa02r9G50f8seV2GyVEfoNUrVg+wP7WgAUOq2yi8=",
+        "lastModified": 1647803890,
+        "narHash": "sha256-qvBfVFZDXw6cndnI31WaCUjYSMEu5Rf5g2YdoLBmKZk=",
         "owner": "memflow",
         "repo": "memflow-win32",
-        "rev": "c9f0259c581a50c70b91cfdaf2fbe634417ed694",
+        "rev": "7a8b41be45457144989bec65d0acf6701378874e",
         "type": "github"
       },
       "original": {
