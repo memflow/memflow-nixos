@@ -164,11 +164,11 @@
     "memflow-pcileech": {
       "flake": false,
       "locked": {
-        "lastModified": 1647726316,
-        "narHash": "sha256-wtjsxTe2pspJzBn7H7GTp2kJd8h9gNCfcSl1AijIYh4=",
+        "lastModified": 1647784693,
+        "narHash": "sha256-AaMwNnmVQpOMOt2B7wc1E+8RdY/xsPKkvByMnjlbd5I=",
         "ref": "main",
-        "rev": "77634eea38087e99c8c57d7ba72f1a43bc3f0934",
-        "revCount": 91,
+        "rev": "d19e1db8c0fae2eaee76c0647c34f1b87af95572",
+        "revCount": 94,
         "submodules": true,
         "type": "git",
         "url": "https://github.com/memflow/memflow-pcileech.git"
@@ -286,11 +286,11 @@
         "nixpkgs": "nixpkgs_2"
       },
       "locked": {
-        "lastModified": 1647656634,
-        "narHash": "sha256-f3VQSat3L2ObJm7DDr72HFCa9e7WAjKPqW70o2Bb7pg=",
+        "lastModified": 1647743035,
+        "narHash": "sha256-4fiTatBwqWOBdeA/r28pNC4PJVW0R0JgpUD+D7GsNcI=",
         "owner": "oxalica",
         "repo": "rust-overlay",
-        "rev": "a21c163919cd90dd67bcd03345fac5441e53cccc",
+        "rev": "093573bc629fb323f5eac51662bc853d26bb2696",
         "type": "github"
       },
       "original": {
