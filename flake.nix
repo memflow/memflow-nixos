@@ -106,6 +106,7 @@ rec {
         (platform: !(builtins.elem platform [
           "armv5tel-linux" # "error: missing bootstrap url for platform armv5te-unknown-linux-gnueabi"
           "mipsel-linux" # "error: attribute 'busybox' missing"
+          "mips64el-linux" # Ditto
           "powerpc64-linux" # "error: evaluation aborted with the following error message: 'unsupported platform for the pure Linux stdenv'"
           "powerpc64le-linux" # Ditto
           "riscv32-linux" # "error: cannot coerce null to a string"
