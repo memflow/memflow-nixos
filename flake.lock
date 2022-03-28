@@ -19,11 +19,11 @@
     "cloudflow": {
       "flake": false,
       "locked": {
-        "lastModified": 1648326990,
-        "narHash": "sha256-rA49kK4fr4rnlmWpY144Nq7V+lBfrHLQdjAS6kJ9ReA=",
+        "lastModified": 1648467611,
+        "narHash": "sha256-6bDSmjzGOW67wiUjJgHucBADE8VBWQ4/jBzIIK8J0yY=",
         "owner": "memflow",
         "repo": "cloudflow",
-        "rev": "7f32b7ae4eecef83d5d967f589b507e5b3db79ba",
+        "rev": "d21dd7cfa81f11c3cc1e2485179d915faa922231",
         "type": "github"
       },
       "original": {
@@ -214,11 +214,11 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1648069223,
-        "narHash": "sha256-BXzQV8p/RR440EB9qY0ULYfTH0zSW1stjUCYeP4SF+E=",
+        "lastModified": 1648390671,
+        "narHash": "sha256-u69opCeHUx3CsdIerD0wVSR+DjfDQjnztObqfk9Trqc=",
         "owner": "NixOS",
         "repo": "Nixpkgs",
-        "rev": "1d08ea2bd83abef174fb43cbfb8a856b8ef2ce26",
+        "rev": "ce8cbe3c01fd8ee2de526ccd84bbf9b82397a510",
         "type": "github"
       },
       "original": {
@@ -286,11 +286,11 @@
         "nixpkgs": "nixpkgs_2"
       },
       "locked": {
-        "lastModified": 1648261903,
-        "narHash": "sha256-AyOSR8qnnh5o5oSf0G2Gqvj9dewKK06OU4Unw3Dxruo=",
+        "lastModified": 1648434893,
+        "narHash": "sha256-rTpgRsgIeCYY4e4Qj+gMT1H80E0f7ITNyseOaPSiyrM=",
         "owner": "oxalica",
         "repo": "rust-overlay",
-        "rev": "007b22cd37d1e847ce5f042754f95c09f4be93a3",
+        "rev": "d477108aefccc46e4b7acc8008f03d4e823da7b0",
         "type": "github"
       },
       "original": {
