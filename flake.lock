@@ -19,11 +19,11 @@
     "cloudflow": {
       "flake": false,
       "locked": {
-        "lastModified": 1648467611,
-        "narHash": "sha256-6bDSmjzGOW67wiUjJgHucBADE8VBWQ4/jBzIIK8J0yY=",
+        "lastModified": 1648659411,
+        "narHash": "sha256-1+APBiqYTJVmJmktisms+0HtEsYPLYCvAGKqH9fgQW8=",
         "owner": "memflow",
         "repo": "cloudflow",
-        "rev": "d21dd7cfa81f11c3cc1e2485179d915faa922231",
+        "rev": "1423409d07c266d1205281129414a415045030c8",
         "type": "github"
       },
       "original": {
@@ -113,11 +113,11 @@
     "memflow-kvm": {
       "flake": false,
       "locked": {
-        "lastModified": 1647802996,
-        "narHash": "sha256-WHkNW2L7fBx0jmjHGv3H/1qXbzKHCNiFkejE0xCAx+s=",
+        "lastModified": 1648637485,
+        "narHash": "sha256-M0wtgkv34lv1XXwZjRdLJkuLrJJvyz+D9yZ3d3IhBY8=",
         "ref": "main",
-        "rev": "98439ba6e6e1e6ffd5cd2074bea92496ebf01835",
-        "revCount": 85,
+        "rev": "4213e094126eeb211562c2323c298e1bf55b8dd8",
+        "revCount": 87,
         "submodules": true,
         "type": "git",
         "url": "https://github.com/memflow/memflow-kvm.git"
@@ -214,11 +214,11 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1648390671,
-        "narHash": "sha256-u69opCeHUx3CsdIerD0wVSR+DjfDQjnztObqfk9Trqc=",
+        "lastModified": 1648632716,
+        "narHash": "sha256-kCmnDeiaMsdhfnNKjxdOzwRh2H6eQb8yWAL+nNabC/Y=",
         "owner": "NixOS",
         "repo": "Nixpkgs",
-        "rev": "ce8cbe3c01fd8ee2de526ccd84bbf9b82397a510",
+        "rev": "710fed5a2483f945b14f4a58af2cd3676b42d8c8",
         "type": "github"
       },
       "original": {
@@ -286,11 +286,11 @@
         "nixpkgs": "nixpkgs_2"
       },
       "locked": {
-        "lastModified": 1648434893,
-        "narHash": "sha256-rTpgRsgIeCYY4e4Qj+gMT1H80E0f7ITNyseOaPSiyrM=",
+        "lastModified": 1649039748,
+        "narHash": "sha256-WJvIJcbiXtQig2j/AocM2zg714JyyEpwviDD19nQWQc=",
         "owner": "oxalica",
         "repo": "rust-overlay",
-        "rev": "d477108aefccc46e4b7acc8008f03d4e823da7b0",
+        "rev": "87d24beaf538aeed40f1d25c10a27fb527f19d7d",
         "type": "github"
       },
       "original": {
