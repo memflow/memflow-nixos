@@ -116,7 +116,7 @@ rec {
         ]))
         lib.platforms.linux;
 
-      commonPkgInputs = { inherit inputs projectVersion lib; };
+      commonPkgInputs = { inherit inputs projectVersion; };
     in
     (lib.recursiveUpdate
       # Package outputs specific to Linux (KVM connector & kernel module)
@@ -127,7 +127,7 @@ rec {
         in
         {
           packages = {
-            memflow-kvm = import ./pkgs/connectors/kvm (commonPkgInputs // { inherit pkgs; });
+            memflow-kvm = pkgs.callPackage ./pkgs/connectors/kvm commonPkgInputs;
           };
 
           memflow-kmod = with pkgs;
@@ -165,25 +165,27 @@ rec {
         {
           packages = {
             # Memflow development package
-            memflow = import ./pkgs/development/memflow (commonPkgInputs // { inherit self pkgs system description; });
+            memflow = pkgs.callPackage ./pkgs/development/memflow (commonPkgInputs // { inherit self description; });
 
             # Connector Plugins
 
-            memflow-win32 = import ./pkgs/connectors/win32 (commonPkgInputs // { inherit pkgs; });
-            memflow-qemu = import ./pkgs/connectors/qemu (commonPkgInputs // { inherit pkgs; });
-            memflow-coredump = import ./pkgs/connectors/coredump (commonPkgInputs // { inherit pkgs; });
-            memflow-native = import ./pkgs/connectors/native (commonPkgInputs // { inherit pkgs; });
-            memflow-kcore = import ./pkgs/connectors/kcore (commonPkgInputs // { inherit pkgs; });
-            # memflow-pcileech = import ./pkgs/connectors/pcileech (commonPkgInputs // { inherit pkgs; });
+            memflow-win32 = pkgs.callPackage ./pkgs/connectors/win32 commonPkgInputs;
+            memflow-qemu = pkgs.callPackage ./pkgs/connectors/qemu commonPkgInputs;
+            memflow-coredump = pkgs.callPackage ./pkgs/connectors/coredump commonPkgInputs;
+            memflow-native = pkgs.callPackage ./pkgs/connectors/native commonPkgInputs;
+            memflow-kcore = pkgs.callPackage ./pkgs/connectors/kcore commonPkgInputs;
+            # memflow-pcileech = pkgs.callPackage ./pkgs/connectors/pcileech commonPkgInputs;
 
             # Application Packages
 
-            cglue-bindgen = import ./pkgs/applications/cglue-bindgen (commonPkgInputs // { inherit pkgs; });
-            cloudflow = import ./pkgs/applications/cloudflow (commonPkgInputs // {
-              inherit system linuxSystems pkgs description;
+            cglue-bindgen = pkgs.callPackage ./pkgs/applications/cglue-bindgen commonPkgInputs;
+            cloudflow = pkgs.callPackage ./pkgs/applications/cloudflow (commonPkgInputs // {
+              inherit description linuxSystems;
             });
-            scanflow = import ./pkgs/applications/scanflow (commonPkgInputs // { inherit pkgs; });
-            reflow = import ./pkgs/applications/reflow (commonPkgInputs // { inherit pkgs description; });
+            scanflow = pkgs.callPackage ./pkgs/applications/scanflow commonPkgInputs;
+            reflow = pkgs.callPackage ./pkgs/applications/reflow (commonPkgInputs // {
+              inherit description;
+            });
           };
         }
       ))) // {
