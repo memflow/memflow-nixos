@@ -21,7 +21,7 @@ pkgs.rustPlatform.buildRustPackage rec {
         (connector: "${connector}/lib/") # Turn each connector plugin package output into a lib/ path
         (builtins.attrValues
           (lib.attrsets.filterAttrs # Filter out package outputs that are not prefixed by "memflow-"
-            (name: _: lib.strings.hasPrefix "memflow-" name)
+            (name: _: name != "memflow-ffi" && lib.strings.hasPrefix "memflow-" name)
             self.packages.${system})));
 
   nativeBuildInputs = with pkgs; [

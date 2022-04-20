@@ -164,8 +164,11 @@ rec {
         in
         {
           packages = {
+            default = self.packages.${system}.memflow-ffi;
+
             # Memflow development package
-            memflow = pkgs.callPackage ./pkgs/development/memflow (commonPkgInputs // { inherit self description; });
+            memflow = throw "'memflow' has been renamed to/replaced by 'memflow-ffi'";
+            memflow-ffi = pkgs.callPackage ./pkgs/development/memflow (commonPkgInputs // { inherit self description; });
 
             # Connector Plugins
 
