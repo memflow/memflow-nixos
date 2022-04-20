@@ -192,7 +192,8 @@ rec {
           };
         }
       ))) // {
-      nixosModule = { config, pkgs, lib, ... }:
+      nixosModule = self.nixosModules.default;
+      nixosModules.default = { config, pkgs, lib, ... }:
         let
           cfg = config.memflow;
         in
