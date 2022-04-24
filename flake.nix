@@ -193,64 +193,67 @@ rec {
         }
       ))) // {
       nixosModule = self.nixosModules.default;
-      nixosModules.default = { config, pkgs, lib, ... }:
-        let
-          cfg = config.memflow;
-        in
-        {
-          options.memflow = with lib; {
-            kvm = {
-              enable = mkEnableOption ''
-                Whether to enable memflow memory introspection framework for KVM. Users in the "memflow" group can
-                interact with the <command>/dev/memflow</command> device.
-              '';
+      nixosModules = {
+        default = self.nixosModules.memflow;
+        memflow = { config, pkgs, lib, ... }:
+          let
+            cfg = config.memflow;
+          in
+          {
+            options.memflow = with lib; {
+              kvm = {
+                enable = mkEnableOption ''
+                  Whether to enable memflow memory introspection framework for KVM. Users in the "memflow" group can
+                  interact with the <command>/dev/memflow</command> device.
+                '';
 
-              loadModule = mkOption {
-                default = true;
-                type = types.bool;
-                description = "Automatically load the memflow KVM kernel module on boot";
+                loadModule = mkOption {
+                  default = true;
+                  type = types.bool;
+                  description = "Automatically load the memflow KVM kernel module on boot";
+                };
+
+                kernelPatch = mkOption {
+                  default = true;
+                  type = types.bool;
+                  description = "Kernel configuration that enables KALLSYMS_ALL";
+                };
               };
 
-              kernelPatch = mkOption {
-                default = true;
-                type = types.bool;
-                description = "Kernel configuration that enables KALLSYMS_ALL";
+              cloudflow = {
+                enable = mkEnableOption ''
+                  Whether to enable cloudflow service and FUSE file system mounting
+                '';
               };
             };
 
-            cloudflow = {
-              enable = mkEnableOption ''
-                Whether to enable cloudflow service and FUSE file system mounting
+            config = with lib; mkIf cfg.kvm.enable {
+              boot = {
+                kernelPatches = mkIf cfg.kvm.kernelPatch [
+                  {
+                    name = "memflow-enable-kallsyms-all";
+                    patch = null;
+                    extraConfig = ''
+                      KALLSYMS_ALL y
+                    '';
+                  }
+                ];
+                kernelModules = mkIf cfg.kvm.loadModule [ "memflow" ];
+                extraModulePackages = [
+                  (self.memflow-kmod.${pkgs.system} config.boot.kernelPackages.kernel)
+                ];
+              };
+
+              system.requiredKernelConfig = with config.lib.kernelConfig; [
+                (isYes "KALLSYMS_ALL")
+              ];
+
+              users.groups.memflow = { };
+              services.udev.extraRules = ''
+                KERNEL=="memflow" SUBSYSTEM=="misc" GROUP="memflow" MODE="0660"
               '';
             };
           };
-
-          config = with lib; mkIf cfg.kvm.enable {
-            boot = {
-              kernelPatches = mkIf cfg.kvm.kernelPatch [
-                {
-                  name = "memflow-enable-kallsyms-all";
-                  patch = null;
-                  extraConfig = ''
-                    KALLSYMS_ALL y
-                  '';
-                }
-              ];
-              kernelModules = mkIf cfg.kvm.loadModule [ "memflow" ];
-              extraModulePackages = [
-                (self.memflow-kmod.${pkgs.system} config.boot.kernelPackages.kernel)
-              ];
-            };
-
-            system.requiredKernelConfig = with config.lib.kernelConfig; [
-              (isYes "KALLSYMS_ALL")
-            ];
-
-            users.groups.memflow = { };
-            services.udev.extraRules = ''
-              KERNEL=="memflow" SUBSYSTEM=="misc" GROUP="memflow" MODE="0660"
-            '';
-          };
-        };
+      };
     };
 }
