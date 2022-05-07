@@ -213,6 +213,12 @@ rec {
                   description = "Automatically load the memflow KVM kernel module on boot";
                 };
 
+                addModule = mkOption {
+                  default = true;
+                  type = types.bool;
+                  description = "Whether to add memflow-kvm to extra kernel module packages";
+                };
+
                 kernelPatch = mkOption {
                   default = true;
                   type = types.bool;
@@ -239,7 +245,7 @@ rec {
                   }
                 ];
                 kernelModules = mkIf cfg.kvm.loadModule [ "memflow" ];
-                extraModulePackages = [
+                extraModulePackages = mkIf cfg.kvm.addModule [
                   (self.memflow-kmod.${pkgs.system} config.boot.kernelPackages.kernel)
                 ];
               };
